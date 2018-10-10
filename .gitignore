@@ -1,3 +1,8 @@
+#VS stuff
+x64/
+*.user
+.vs/
+
 # Prerequisites
 *.d
 
