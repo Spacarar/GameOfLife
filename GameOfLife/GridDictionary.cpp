@@ -101,3 +101,7 @@ int GridDictionary::cleanup(double cutoffModifier) {
 	}
 	return count;
 }
+
+int GridDictionary::size() {
+	return gridDict.size();
+}

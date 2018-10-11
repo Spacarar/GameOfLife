@@ -1,10 +1,27 @@
 #include "GameEngine.h"
 
-void GameEngine::init() {
+void GameEngine::init(unsigned int gridSize, unsigned int gPlayerPieces, unsigned int futureDepth) {
 	totalFrames = 0;
 	FPS = 5;
-	grid = new Grid(250, 4);
-	gPlayer = new GridPlayer(250);
+	int pixelSize = 4;
+	if (gridSize > 100) {
+		pixelSize--;
+		if (gridSize > 250) {
+			pixelSize--;
+		}
+	}
+	if (gridSize < 50) {
+		pixelSize += 2;
+		if (gridSize < 25) {
+			gridSize += 2;
+		}
+	}
+	if (gridSize < 4 || gridSize > 1000000) {
+		gridSize = 10;
+	}
+	SCR_HEIGHT = SCR_WIDTH = pixelSize * gridSize;
+	grid = new Grid(gridSize, pixelSize);
+	gPlayer = new GridPlayer(gridSize, gPlayerPieces, futureDepth);
 	sTime = lUpdate = lDraw = mClock::now();
 	isRunning = true;
 	gameState = MAINMENU;
@@ -140,6 +157,10 @@ GameEngine::GameEngine() {
 	init();
 	initSDL();
 
+}
+GameEngine::GameEngine(unsigned int GridSize, unsigned int playerPieces, unsigned int futureDepth) {
+	init(GridSize, playerPieces, futureDepth);
+	initSDL();
 }
 GameEngine::~GameEngine() {
 	delete gPlayer;

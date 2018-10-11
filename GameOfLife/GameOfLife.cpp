@@ -10,7 +10,17 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	cout << "Begin Main" << endl;
-	GameEngine *g = new GameEngine();
+	unsigned int gridSize = 0, pickPieces = 0, futureDepth = 0;
+	cout << "gridSize: ";
+	cin >> gridSize;
+	cin.get();
+	cout << "\n pickPieces: ";
+	cin >> pickPieces;
+	cin.get();
+	cout << "\n futureDepth: ";
+	cin >> futureDepth;
+	cin.get();
+	GameEngine *g = new GameEngine(gridSize, pickPieces, futureDepth);
 	cout << "Welcome to conways game " << endl;
 	g->run();
 	g->quit();

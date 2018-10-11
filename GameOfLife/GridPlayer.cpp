@@ -1,16 +1,15 @@
 #include "GridPlayer.h"
 
 
-GridPlayer::GridPlayer(int gSize) {
-	cout << "Gridplayer " << gSize << endl;
+GridPlayer::GridPlayer(unsigned int gSize, unsigned int gPieces, unsigned int fDepth) {
 	displayIt = 0;
 	deadChecked = oscChecked = liveChecked = 0;
-	pickPiecesCount = 20;
-	futureDepth = 100;
+	pickPiecesCount = gPieces;
+	futureDepth = fDepth;
 	keepSearching = true;
 	gridSize = gSize;
 	if (gSize < 0)gSize = 4;
-	workingGrid = new Grid(gSize, 8);
+	workingGrid = new Grid(gSize, 1);
 	gd = GridDictionary(gSize);
 }
 GridPlayer::~GridPlayer() {
@@ -43,17 +42,55 @@ void GridPlayer::pickRandom() {
 	//update things so you miss the loads of start pixels
 	workingGrid->update();
 }
+
+void GridPlayer::pickUnion() {
+	int chosen1, chosen2;
+	map<size_t, GameRecord>::iterator it1, it2;
+	vector<pair<int, int> > chosenCoords;
+	chosen1 = rand() % (gd.size());
+	chosen2 = rand() % (gd.size());
+	it1 = gd.gridDict.begin();
+	it2 = gd.gridDict.begin();
+	for (int i = 0; i < chosen1 && it1 != gd.gridDict.end(); i++) ++it1;
+	for (int i = 0; i < chosen2 && it2 != gd.gridDict.end(); i++) ++it2;
+	if (it1 == gd.gridDict.end()) {
+		cout << "it1 invalid for union" << endl;
+		return;
+	}
+	if (it2 == gd.gridDict.end()) {
+		cout << "it2 invalid for union" << endl;
+		return;
+	}
+	for (int i = 0; i < it1->second.startCoords.size(); i++) {
+		chosenCoords.push_back(make_pair(it1->second.startCoords[i].first, it1->second.startCoords[i].second));
+	}
+	for (int j = 0; j < it2->second.startCoords.size(); j++) {
+		chosenCoords.push_back(make_pair(it2->second.startCoords[j].first, it2->second.startCoords[j].second));
+	}
+	workingGrid->setState(chosenCoords);
+	workingGrid->update();
+	
+}
 void GridPlayer::start() {
 	string origin = "random";
 	size_t me;
 	long int totalCount = 0;
 	while (keepSearching) {
-		for (int c = 0; c < pickPiecesCount * 4; c++) {
+		std::cout << ++totalCount << endl;
+		for (int c = 0; c < pickPiecesCount * 2; c++) {
+			std::cout << "c:" << c << endl;
 			if (keepSearching == false) {
-				c = pickPiecesCount * 4 + 1;
+				c = pickPiecesCount * 2 + 1;
 				break;
 			}
-			pickRandom();
+			if (c < 3 || rand() % 2 == 0) {
+				origin = "random";
+				pickRandom();
+			}
+			else {
+				origin = "union";
+				pickUnion();
+			}
 			me = workingGrid->me();
 			totalCount++;
 			for (int f = 0; f < futureDepth; f++) {
@@ -77,11 +114,11 @@ void GridPlayer::start() {
 				}
 			}
 		}
-		cout << "BEFORE  ";
-		printf("Final Count: %d  D:%d  O:%d  L:%d", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
+		std::cout << "BEFORE  ";
+		std::printf("Final Count: %d  D:%d  O:%d  L:%d", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
 		gd.cleanup(.8);
-		cout << "AFTER  ";
-		printf("Final Count: %d  D:%d  O:%d  L:%d\n\n", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
+		std::cout << "AFTER  ";
+		std::printf("Final Count: %d  D:%d  O:%d  L:%d\n\n", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
 
 	}
 }

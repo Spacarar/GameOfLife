@@ -19,8 +19,9 @@ protected:
 
 	//mutation selections
 	void pickRandom();
+	void pickUnion();
 public:
-	GridPlayer(int gSize = 50);
+	GridPlayer(unsigned int gSize = 50, unsigned int gPieces = 20, unsigned int fDepth = 100);
 	~GridPlayer();
 	void start();
 	void stop();

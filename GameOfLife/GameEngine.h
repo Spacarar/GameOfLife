@@ -7,13 +7,14 @@
 #include "GridPlayer.h"
 
 
-const int SCR_WIDTH = 1080;
-const int SCR_HEIGHT = 720;
+
 typedef std::chrono::steady_clock mClock;
 typedef enum GameState {MAINMENU, SEARCHING, FREEPLAY, EXIT} GameState;
 
 const int MILLIS_PER_SECOND = 1000;
 class GameEngine {
+	int SCR_WIDTH;
+	int SCR_HEIGHT;
 	int FPS;
 	int totalFrames;
 	mClock::time_point sTime;
@@ -29,7 +30,7 @@ class GameEngine {
 	Grid *grid; //for drawing
 	GridPlayer *gPlayer;
 
-	void init();
+	void init(unsigned int gridSize = 50, unsigned int gPlayerPieces = 20, unsigned int futureDepth = 100);
 	void initSDL();
 	void update();
 	
@@ -45,6 +46,7 @@ class GameEngine {
 
 public:
 	GameEngine();
+	GameEngine(unsigned int GridSize, unsigned int playerPieces, unsigned int futureDepth);
 	~GameEngine();
 
 	void run();
