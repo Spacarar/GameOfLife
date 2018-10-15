@@ -76,9 +76,7 @@ void GridPlayer::start() {
 	size_t me;
 	long int totalCount = 0;
 	while (keepSearching) {
-		std::cout << ++totalCount << endl;
 		for (int c = 0; c < pickPiecesCount * 2; c++) {
-			std::cout << "c:" << c << endl;
 			if (keepSearching == false) {
 				c = pickPiecesCount * 2 + 1;
 				break;
@@ -101,7 +99,7 @@ void GridPlayer::start() {
 				gd.update(me, workingGrid, f, origin);
 				switch (gd.stateOf(me)) {
 				case LIVING:
-					workingGrid->update();
+					workingGrid->update(true);
 					break;
 				case OSCILLATING:
 					f = futureDepth + 1;
@@ -114,6 +112,7 @@ void GridPlayer::start() {
 				}
 			}
 		}
+		std::cout << "Total Count so far: " << totalCount << endl;
 		std::cout << "BEFORE  ";
 		std::printf("Final Count: %d  D:%d  O:%d  L:%d", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
 		gd.cleanup(.8);

@@ -13,7 +13,7 @@ void GameEngine::init(unsigned int gridSize, unsigned int gPlayerPieces, unsigne
 	if (gridSize < 50) {
 		pixelSize += 2;
 		if (gridSize < 25) {
-			gridSize += 2;
+			pixelSize += 2;
 		}
 	}
 	if (gridSize < 4 || gridSize > 1000000) {

@@ -28,22 +28,34 @@ class Grid {
 protected:
 	int gridSize; // grid will be square 
 	int pixelSize; //size of a displayed pixel of the grid
+
 	Pixel ***pixel; // 2d array of pointers
 	void freeGrid(); //deallocate pixel array
 
+	SDL_Thread *riser;
+	SDL_Thread *faller;
+
 	int safeN(int n); //modulo math to ensure n is in the array
+
+	//single threaded solution, smaller grids
 	void planMove();//sets the sync bit
 	void updateGrid();//cp sync bit to current bit
+	int updateThreaded();
+
+	//double threaded solution faster for exceptionally large grids
+	static int startRiserPlan(void *self);
+	static int startRiserUpdate(void *self);
+	static int startFallerPlan(void *self);
+	static int startFallerUpdate(void *self);
+
 	int neighbors(int x, int y);
+
 public:
 	Grid(int gridSize = 4, int pixelSize = 2);
 	Grid(const Grid &g);
 	~Grid();
-	Pixel*** pixelValue() {
-		return pixel;
-	}
 	void draw(SDL_Renderer *ren);
-	void update();
+	void update(bool threaded = false);
 
 	size_t me();
 	bool isEmpty();
