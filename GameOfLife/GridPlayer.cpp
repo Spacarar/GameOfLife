@@ -1,8 +1,16 @@
 #include "GridPlayer.h"
 
 
-GridPlayer::GridPlayer(unsigned int gSize, unsigned int gPieces, unsigned int fDepth) {
+GridPlayer::GridPlayer(unsigned int gSize, unsigned int gPieces, unsigned int fDepth, unsigned int threads) {
 	displayIt = 0;
+	if (threads > 8) {
+		threads = 8;
+		cout << "maximum supported threads 8";
+	}
+	this->threads = threads;
+	for (int i = 0; i < threads; i++) {
+		this->grids.push_back(new Grid(gSize));
+	}
 	deadChecked = oscChecked = liveChecked = 0;
 	pickPiecesCount = gPieces;
 	futureDepth = fDepth;
@@ -120,6 +128,12 @@ void GridPlayer::start() {
 		std::printf("Final Count: %d  D:%d  O:%d  L:%d\n\n", gd.totalCount(), gd.deadCount(), gd.oscCount(), gd.liveCount());
 
 	}
+}
+void GridPlayer::startThreaded() {
+	
+}
+int GridPlayer::studyGrid(void* self) {
+
 }
 void GridPlayer::stop() {
 	keepSearching = false;

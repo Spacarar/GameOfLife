@@ -150,13 +150,15 @@ void Grid::updateGrid() {
 }
 
 void Grid::update(bool threaded) {
-	if (this->gridSize >= 200) {
-		this->updateThreaded();
-	}
-	else {
-		this->planMove();
-		this->updateGrid();
-	}
+	this->planMove();
+	this->updateGrid();
+	//if (this->gridSize >= 200) {
+	//	this->updateThreaded();
+	//}
+	//else {
+	//	this->planMove();
+	//	this->updateGrid();
+	//}
 }
 int Grid::updateThreaded() {
 	int riserStatus = 0, fallerStatus = 0;

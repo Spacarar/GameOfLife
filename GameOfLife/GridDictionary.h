@@ -126,7 +126,7 @@ public:
 	//Cleanup will take the average of the entire dictionary then delete anything that is lower than that average * cutoffModifier
 	//thus cutoffModifier = 1 means anything lower than the average will be thrown out
 	int cleanup(double cutoffModifier = 1);
-	int size();
+	int size(); 
 	//Dictionary information things
 	int deadCount();
 	int liveCount();
