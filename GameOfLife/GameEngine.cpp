@@ -3,6 +3,9 @@
 void GameEngine::init(unsigned int gridSize, unsigned int gPlayerPieces, unsigned int futureDepth) {
 	totalFrames = 0;
 	FPS = 5;
+	if (gridSize < 4 || gridSize > 1000000) {
+		gridSize = 10;
+	}
 	int pixelSize = 4;
 	if (gridSize > 100) {
 		pixelSize--;
@@ -16,12 +19,9 @@ void GameEngine::init(unsigned int gridSize, unsigned int gPlayerPieces, unsigne
 			pixelSize += 2;
 		}
 	}
-	if (gridSize < 4 || gridSize > 1000000) {
-		gridSize = 10;
-	}
-	SCR_HEIGHT = SCR_WIDTH = pixelSize * gridSize;
+	SCR_HEIGHT = SCR_WIDTH = (pixelSize) * gridSize;
 	grid = new Grid(gridSize, pixelSize);
-	gPlayer = new GridPlayer(gridSize, gPlayerPieces, futureDepth);
+	gWeb = new GridWeb(gridSize);
 	sTime = lUpdate = lDraw = mClock::now();
 	isRunning = true;
 	gameState = MAINMENU;
@@ -75,7 +75,8 @@ int GameEngine::renderGame(void* self) {
 }
 int GameEngine::searchPatterns(void* self) {
 	GameEngine *g = (GameEngine*)self;
-	g->gPlayer->start();
+	//g->gPlayer->start();
+	g->gWeb->startSearching();
 	return 0;
 }
 
@@ -103,11 +104,13 @@ void GameEngine::handleEvent(SDL_Event e) {
 		SDL_GetMouseState(&mouseX, &mouseY);
 		if (e.button.button == SDL_BUTTON_LEFT) {
 			grid->clear();
-			grid->setState(gPlayer->previousFound());
+			//grid->setState(gPlayer->previousFound());
+			grid->setState(gWeb->previousGrid());
 		}
 		if (e.button.button == SDL_BUTTON_RIGHT) {
 			grid->clear();
-			grid->setState(gPlayer->nextFound());
+			//grid->setState(gPlayer->nextFound());
+			grid->setState(gWeb->nextGrid());
 			//grid.drawGlider(mouseX, mouseY);
 		}
 	}
@@ -163,8 +166,8 @@ GameEngine::GameEngine(unsigned int GridSize, unsigned int playerPieces, unsigne
 	initSDL();
 }
 GameEngine::~GameEngine() {
-	delete gPlayer;
-
+	//delete gPlayer;
+	delete gWeb;
 }
 
 void GameEngine::run() {
@@ -187,8 +190,11 @@ void GameEngine::run() {
 			if (isRunning) handleEvent(event);
 		}
 	}
-	if (gPlayer != nullptr) {
-		gPlayer->stop();
+	//if (gPlayer != nullptr) {
+	//	gPlayer->stop();
+	//}
+	if (gWeb != nullptr) {
+		gWeb->stopSearching();
 	}
 	printf("FRAMES: %d FPS: %lld", totalFrames, (totalFrames*MILLIS_PER_SECOND) / ((std::chrono::duration_cast<std::chrono::milliseconds>(mClock::now() - sTime).count())));
 	SDL_WaitThread(updateThread, &updateResult);

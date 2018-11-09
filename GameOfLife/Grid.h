@@ -64,6 +64,7 @@ public:
 	void setState(vector<pair<int, int> > sc);
 	void clear();
 	vector<pair<int, int> > getCoords();
+	void printCoords();
 	bool isAlive(int x, int y);
 
 	bool operator==(Grid g);

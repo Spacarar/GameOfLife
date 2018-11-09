@@ -5,6 +5,7 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include "GridPlayer.h"
+#include "GridWeb.h"
 
 
 
@@ -28,7 +29,8 @@ class GameEngine {
 	mClock::time_point lUpdate, lDraw;
 
 	Grid *grid; //for drawing
-	GridPlayer *gPlayer;
+	//GridPlayer *gPlayer;
+	GridWeb *gWeb;
 
 	void init(unsigned int gridSize = 50, unsigned int gPlayerPieces = 20, unsigned int futureDepth = 100);
 	void initSDL();

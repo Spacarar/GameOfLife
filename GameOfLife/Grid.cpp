@@ -118,10 +118,16 @@ void Grid::planMove() {
 			}
 			ee = neighbors(y, x);
 			//overpopulation or underpopulation
-			if (ee > 3 || ee < 2) {
-				pixel[y][x]->sync = false;
+			if (pixel[y][x]->current) {
+				if ((ee > 3 || ee < 2)) {
+					pixel[y][x]->sync = false;
+				}
+				else {
+					//this wasn't always working
+					pixel[y][x]->sync = true;
+				}
+				//population growth
 			}
-			//population growth
 			else if (ee == 3) {
 				pixel[y][x]->sync = true;
 			}
@@ -233,6 +239,14 @@ vector<pair<int, int> > Grid::getCoords() {
 		}
 	}
 	return rt;
+}
+void Grid::printCoords() {
+	vector<pair<int, int> > gridC = this->getCoords();
+	cout << "Coordinates: ";
+	for (int i = 0; i < gridC.size(); i++) {
+		cout << "(" << gridC[i].first << ", " << gridC[i].second << "), ";
+	}
+	cout << "=======================================================\n";
 }
 
 bool Grid::isAlive(int x, int y) {

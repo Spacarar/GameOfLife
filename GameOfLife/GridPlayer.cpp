@@ -107,7 +107,7 @@ void GridPlayer::start() {
 				gd.update(me, workingGrid, f, origin);
 				switch (gd.stateOf(me)) {
 				case LIVING:
-					workingGrid->update(true);
+					workingGrid->update(false);
 					break;
 				case OSCILLATING:
 					f = futureDepth + 1;
@@ -131,9 +131,6 @@ void GridPlayer::start() {
 }
 void GridPlayer::startThreaded() {
 	
-}
-int GridPlayer::studyGrid(void* self) {
-
 }
 void GridPlayer::stop() {
 	keepSearching = false;
