@@ -8,9 +8,10 @@ GridWeb::GridWeb() {
 }
 GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
-	if (numWork < 2 || numWork > 12) {
+	/*if (numWork < 2 || numWork > 12) {
 		numWork = 2;
-	}
+	}*/
+	numWork = 1;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];

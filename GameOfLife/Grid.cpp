@@ -40,7 +40,7 @@ Grid::Grid(const Grid &g) {
 }
 
 size_t Grid::me() {
-	static std::string representation = "";
+	std::string representation = "";
 	std::hash<string> hashThis;
 	representation.clear();
 	if (pixel == nullptr) {
