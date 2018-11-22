@@ -1,27 +1,27 @@
 #include "GameEngine.h"
 
-void GameEngine::init(unsigned int gridSize, unsigned int gPlayerPieces, unsigned int futureDepth) {
+void GameEngine::init(unsigned int gridSize, unsigned int numWorkers) {
 	totalFrames = 0;
 	FPS = 5;
 	if (gridSize < 4 || gridSize > 1000000) {
 		gridSize = 10;
 	}
 	int pixelSize = 4;
-	if (gridSize > 100) {
+	if (gridSize > 150) {
 		pixelSize--;
-		if (gridSize > 250) {
+		if (gridSize > 300) {
 			pixelSize--;
 		}
 	}
-	if (gridSize < 50) {
+	if (gridSize < 75) {
 		pixelSize += 2;
-		if (gridSize < 25) {
+		if (gridSize < 50) {
 			pixelSize += 2;
 		}
 	}
 	SCR_HEIGHT = SCR_WIDTH = (pixelSize) * gridSize;
 	grid = new Grid(gridSize, pixelSize);
-	gWeb = new GridWeb(gridSize);
+	gWeb = new GridWeb(gridSize, numWorkers);
 	sTime = lUpdate = lDraw = mClock::now();
 	isRunning = true;
 	gameState = MAINMENU;
@@ -161,8 +161,8 @@ GameEngine::GameEngine() {
 	initSDL();
 
 }
-GameEngine::GameEngine(unsigned int GridSize, unsigned int playerPieces, unsigned int futureDepth) {
-	init(GridSize, playerPieces, futureDepth);
+GameEngine::GameEngine(unsigned int GridSize, unsigned int gridWork) {
+	init(GridSize, gridWork);
 	initSDL();
 }
 GameEngine::~GameEngine() {
@@ -198,7 +198,7 @@ void GameEngine::run() {
 	}
 	printf("FRAMES: %d FPS: %lld", totalFrames, (totalFrames*MILLIS_PER_SECOND) / ((std::chrono::duration_cast<std::chrono::milliseconds>(mClock::now() - sTime).count())));
 	SDL_WaitThread(updateThread, &updateResult);
-	SDL_WaitThread(drawThread, &updateResult);
+	SDL_WaitThread(drawThread, &drawResult);
 	SDL_WaitThread(searchThread, &searchResult);
 	quit();
 	std::cin.get();

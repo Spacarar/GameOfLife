@@ -43,8 +43,20 @@ size_t Grid::me() {
 	static std::string representation = "";
 	std::hash<string> hashThis;
 	representation.clear();
+	if (pixel == nullptr) {
+		cout << "pixel was null" << endl;
+		return 0;
+	}
 	for (int x = 0; x < gridSize; x++) {
+		if (pixel[x] == nullptr) {
+			cout << "pixel[x] is null..." << endl;
+			return 0;
+		}
 		for (int y = 0; y < gridSize; y++) {
+			if (pixel[x][y] == nullptr) {
+				cout << "pixel[x][y] is null..." << endl;
+				return 0;
+			}
 			if (pixel[x][y]->current)representation.append(to_string(x) + "," + to_string(y) + "|");
 			//else representation.append("0");
 		}

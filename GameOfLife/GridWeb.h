@@ -46,7 +46,7 @@ public:
 
 class GridRoot {
 protected:
-	int root_length;
+	size_t root_length;
 	std::vector<size_t> root_members;
 
 public:
@@ -138,12 +138,13 @@ class GridWeb {
 protected:
 	std::map<size_t, Record> gridWeb;
 	std::vector<GridRoot> gridRoots;
-	WebWorker* worker;
+	unsigned int numWorkers;
+	WebWorker** worker; //array of pointers
 	unsigned int shownIndex;
 
 public:
 	GridWeb();
-	GridWeb(unsigned int gridSize);
+	GridWeb(unsigned int gridSize, unsigned int numWork);
 	~GridWeb();
 
 	void startSearching();

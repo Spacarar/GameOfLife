@@ -4,21 +4,35 @@
 GridWeb::GridWeb() {
 	this->gridWeb.clear();
 	this->shownIndex = 0;
-	this->worker = new WebWorker();
+	this->worker = new WebWorker*;
 }
-GridWeb::GridWeb(unsigned int gridSize) {
+GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
+	if (numWork < 2 || numWork > 12) {
+		numWork = 2;
+	}
 	this->shownIndex = 0;
-	this->worker = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots));
+	this->numWorkers = numWork;
+	this->worker = new WebWorker*[numWork];
+	for (unsigned int i = 0; i < numWork; i++) {
+		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots));
+	}
 }
 GridWeb::~GridWeb() {
-	delete this->worker;
+	for (unsigned int i = 0; i < this->numWorkers; i++) {
+		delete this->worker[i];
+	}
+	delete[] this->worker;
 }
 void GridWeb::startSearching() {
-	this->worker->start();
+	for (int i = 0; i < this->numWorkers; i++) {
+		this->worker[i]->start();
+	}
 }
 void GridWeb::stopSearching() {
-	this->worker->stop();
+	for (int i = 0; i < this->numWorkers; i++) {
+		this->worker[i]->stop();
+	}
 }
 
 //==============================================================================================
@@ -50,9 +64,6 @@ WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, st
 	this->workerThread = nullptr;
 }
 WebWorker::~WebWorker() {
-	delete this->workerThread;
-	/*this->globalMap = nullptr;
-	this->globalRoots = nullptr;*/
 	if (this->personalMap != nullptr) {
 		(*this->personalMap).clear();
 		delete this->personalMap;
@@ -66,7 +77,10 @@ void WebWorker::start() {
 
 int WebWorker::StartSearching(void *self) {
 	WebWorker* worker = (WebWorker*)self;
-
+	if (worker->globalMap == nullptr || worker->globalRoots == nullptr) {
+		cout << "global is null on worker... force quitting this thread" << endl;
+		return -1;
+	}
 	WorkCycle cycle = WORKLIVING;
 	int count = 0;
 	while (worker->isSearching) {
@@ -95,6 +109,9 @@ std::vector<pair<int, int> > WebWorker::selectStartingGrid() {
 	else if (choice == 1) {
 		return pickUnion();
 	}
+	else {
+		return pickRandom(rand() % this->gridSize, rand() % this->gridSize);
+	}
 }
 std::vector<pair<int, int> > WebWorker::pickRandom(unsigned int pieces, unsigned int distance) {
 	if (pieces < 3) pieces = 3;
@@ -103,7 +120,7 @@ std::vector<pair<int, int> > WebWorker::pickRandom(unsigned int pieces, unsigned
 	int baseY = rand() % this->gridSize;
 	int dX, dY;
 	vector<pair<int, int> > chosenCoords;
-	for (int i = 0; i < pieces; i++) {
+	for (unsigned int i = 0; i < pieces; i++) {
 		dX = rand() % distance;
 		if (rand() % 2 == 0) dX *= -1;
 		dY = rand() % distance;
@@ -114,7 +131,7 @@ std::vector<pair<int, int> > WebWorker::pickRandom(unsigned int pieces, unsigned
 }
 std::vector<pair<int, int> > WebWorker::pickUnion() {
 	vector<pair<int, int> > chosenCoords;
-	if (this->globalMap == nullptr || (*this->globalMap).size() == 0) {
+	if (this->globalMap == nullptr || (*this->globalMap).size() < 5) {
 		return this->pickRandom(rand() % this->gridSize, rand() % this->gridSize);
 	}
 	int chosen1 = rand() % (*this->globalMap).size();
@@ -230,6 +247,7 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			cout << "Updated existing record" << endl;
 		}
 	}
+	return DONE;
 }
 void WebWorker::clearGrid() {
 	this->grid->clear();

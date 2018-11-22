@@ -32,7 +32,7 @@ class GameEngine {
 	//GridPlayer *gPlayer;
 	GridWeb *gWeb;
 
-	void init(unsigned int gridSize = 50, unsigned int gPlayerPieces = 20, unsigned int futureDepth = 100);
+	void init(unsigned int gridSize = 50, unsigned int numWorkers = 2);
 	void initSDL();
 	void update();
 	
@@ -48,7 +48,7 @@ class GameEngine {
 
 public:
 	GameEngine();
-	GameEngine(unsigned int GridSize, unsigned int playerPieces, unsigned int futureDepth);
+	GameEngine(unsigned int GridSize, unsigned int numWorkers);
 	~GameEngine();
 
 	void run();
