@@ -14,7 +14,7 @@ public:
 	std::vector<size_t> parents;
 	int root_length = 0;
 	bool parentsIncludes(size_t o) {
-		for (int i = 0; i < parents.size(); i++) {
+		for (unsigned int i = 0; i < parents.size(); i++) {
 			if (parents[i] == o)return true;
 		}
 		return false;
@@ -31,10 +31,10 @@ public:
 		this->is_root = r.is_root;
 		this->parents.clear();
 		this->startCoords.clear();
-		for (int i = 0; i < r.parents.size(); i++) {
+		for (unsigned int i = 0; i < r.parents.size(); i++) {
 			this->parents.push_back(r.parents[i]);
 		}
-		for (int i = 0; i < r.startCoords.size(); i++) {
+		for (unsigned int i = 0; i < r.startCoords.size(); i++) {
 			this->startCoords.push_back(r.startCoords[i]);
 		}
 		this->root_length = this->parents.size();
@@ -87,7 +87,7 @@ public:
 		if (g.root_length != this->root_length) {
 			return false;
 		}
-		for (int i = 0; i < g.root_members.size(); i++) {
+		for (unsigned int i = 0; i < g.root_members.size(); i++) {
 			if (!this->includes(g.root_members[i])) {
 				return false;
 			}
@@ -138,6 +138,7 @@ protected:
 	unsigned int numWorkers;
 	WebWorker** worker; //array of pointers
 	unsigned int shownIndex;
+	int countParents(size_t node, int count=0);
 
 public:
 	GridWeb();

@@ -252,7 +252,7 @@ vector<pair<int, int> > Grid::getCoords() {
 void Grid::printCoords() {
 	vector<pair<int, int> > gridC = this->getCoords();
 	cout << "Coordinates: ";
-	for (int i = 0; i < gridC.size(); i++) {
+	for (unsigned int i = 0; i < gridC.size(); i++) {
 		cout << "(" << gridC[i].first << ", " << gridC[i].second << "), ";
 	}
 	cout << "=======================================================\n";

@@ -26,12 +26,12 @@ GridWeb::~GridWeb() {
 	delete[] this->worker;
 }
 void GridWeb::startSearching() {
-	for (int i = 0; i < this->numWorkers; i++) {
+	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->start();
 	}
 }
 void GridWeb::stopSearching() {
-	for (int i = 0; i < this->numWorkers; i++) {
+	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->stop();
 	}
 }
@@ -144,10 +144,10 @@ std::vector<pair<int, int> > WebWorker::pickUnion() {
 		if (i <= chosen1) ++it1;
 		if (i <= chosen2) ++it2;
 	}
-	for (int i = 0; i < it1->second.startCoords.size(); i++) {
+	for (unsigned int i = 0; i < it1->second.startCoords.size(); i++) {
 		chosenCoords.push_back(make_pair(it1->second.startCoords[i].first, it1->second.startCoords[i].second));
 	}
-	for (int i = 0; i < it2->second.startCoords.size(); i++) {
+	for (unsigned int i = 0; i < it2->second.startCoords.size(); i++) {
 		chosenCoords.push_back(make_pair(it2->second.startCoords[i].first, it2->second.startCoords[i].second));
 	}
 	return chosenCoords;
@@ -221,7 +221,7 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 	}
 	if (cy != GLOBALREPEATED) {
 		bool exists = false;
-		for (int i = 0; i < this->globalRoots->size(); i++) {
+		for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
 			if ((*this->globalRoots)[i].isMatching(this->personalRoot)) {
 				exists = true;
 				break;
@@ -239,7 +239,7 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			//cout << "Created new record" << endl;
 		}
 		else {
-			for (int i = 0; i < myRecords->second.parents.size(); i++) {
+			for (unsigned int i = 0; i < myRecords->second.parents.size(); i++) {
 				//if this one already exists extend its parent's to whatever we found too
 				if (!(*this->globalMap)[myRecords->first].parentsIncludes(myRecords->second.parents[i])) {
 					(*this->globalMap)[myRecords->first].parents.push_back(myRecords->second.parents[i]);
@@ -285,4 +285,8 @@ std::vector<pair<int, int> > GridWeb::previousGrid() {
 		return temp;
 	}
 	return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
+}
+
+int GridWeb::countParents(size_t node, int count) {
+	return count;
 }

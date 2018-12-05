@@ -7,7 +7,8 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	cout << "Begin Main" << endl;
-	unsigned int gridSize = 0, numWorkers = 0;
+	unsigned int gridSize = 0;
+	//unsigned int numWorkers = 0;
 	cout << "gridSize: ";
 	cin >> gridSize;
 	cin.get();
