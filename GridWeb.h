@@ -12,7 +12,8 @@ public:
 	std::vector<pair<int, int> > startCoords;
 	bool is_root = false;
 	std::vector<size_t> parents;
-	int root_length = 0;
+	int root_length;
+	int node_height;
 	bool parentsIncludes(size_t o) {
 		for (unsigned int i = 0; i < parents.size(); i++) {
 			if (parents[i] == o)return true;
@@ -25,6 +26,7 @@ public:
 		parents.clear();
 		startCoords.clear();
 		root_length = 0;
+		node_height = 0;
 	}
 	Record(const Record & r) {
 		this->child = r.child;
@@ -114,6 +116,7 @@ protected:
 	WorkCycle dumpData(WorkCycle cy); //send globalMap your personal map data
 	WorkCycle updateGrid();
 	WorkCycle createRoot();
+	int countParents(size_t node, int count=0, map<size_t, bool> *seen = new map<size_t, bool>());
 
 	std::vector<pair<int, int> > selectStartingGrid();
 	void clearGrid();
@@ -138,7 +141,6 @@ protected:
 	unsigned int numWorkers;
 	WebWorker** worker; //array of pointers
 	unsigned int shownIndex;
-	int countParents(size_t node, int count=0);
 
 public:
 	GridWeb();

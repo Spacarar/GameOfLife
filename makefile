@@ -7,8 +7,8 @@ INCLUDE_PATHS = -ISDL2-2.0.8\include
 LIBRARY_PATHS = -LSDL2-2.0.8\lib\x64
 
 #removes console window & warnings
-PROD_FLAGS = -Wl,-subsystem,windows -w
-DEV_FLAGS = -Wall
+PROD_FLAGS = -Wl,-subsystem,windows -w -std=c++14
+DEV_FLAGS = -Wall -std=c++14
 
 L_FLAGS = -lSDL2main -lSDL2 -lmingw32
 all : $(OBJS)

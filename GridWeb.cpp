@@ -159,13 +159,13 @@ WorkCycle WebWorker::updateGrid() {
 	size_t next = 0;
 	if ((*this->globalMap).count(prev) > 0) {
 		//this grid exists on global map we just found a branch to get to it
-		cout << "global repeated" << endl;
+		// cout << "global repeated" << endl;
 		return GLOBALREPEATED;
 	}
 	if ((*this->personalMap)[prev].child != 0) {
 		//this grid was already found
 		this->personalRoot.clear();
-		cout << "personal repeated" << endl;
+		// cout << "personal repeated" << endl;
 		return REPEATED;
 	}
 	else {
@@ -202,11 +202,11 @@ WorkCycle WebWorker::createRoot() {
 		this->personalRoot.push(temp);
 		temp = (*this->personalMap)[temp].child;
 		if (temp == origin) {
-			cout << "root found!" << endl;
+			// cout << "root found!" << endl;
 			return ROOTCREATED;
 		}
 	}
-	cout << "root probably found?" << endl;
+	// cout << "root probably found?" << endl;
 	return ROOTCREATED;
 }
 
@@ -228,8 +228,12 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			}
 		}
 		if (!exists) {
+			for(unsigned int i = 0; i < this->personalRoot.size(); i++){
+				this->countParents(this->personalRoot.member(i));
+				// cout << "wrote parent: "<<this->personalRoot.member(i) <<endl;
+			}
 			this->globalRoots->push_back(this->personalRoot);
-			cout << "wrote global root" << endl;
+			// cout << "wrote global root" << endl;
 		}
 	}
 	std::map<size_t, Record>::iterator myRecords;//records from the worker
@@ -287,6 +291,27 @@ std::vector<pair<int, int> > GridWeb::previousGrid() {
 	return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
 }
 
-int GridWeb::countParents(size_t node, int count) {
+int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {
+	if(seen == nullptr){
+		cout << "countparents null seen"<<endl;
+		return count;
+	}
+	if(personalMap == nullptr || globalMap == nullptr || (*personalMap).size() < 1){
+		cout << "somebody's map doesn't look correct"<<endl;
+		return count;
+	}
+	if((*personalMap).count(node) < 1){
+		cout << "node passed does not exist" <<endl;
+		return count;
+	}
+	if((*seen)[node] == true){
+		cout << "node parents circular reference" << endl;
+		return count;
+	}
+	(*personalMap)[node].node_height = count;
+	(*seen)[node] = true;
+	for(unsigned int i = 0; i < (*personalMap)[node].parents.size(); i++){
+		return countParents((*personalMap)[node].parents[i], count+1, seen);
+	}
 	return count;
 }
