@@ -276,11 +276,16 @@ void WebWorker::stop() {
 
 std::vector<pair<int, int> > GridWeb::nextGrid() {
 	shownIndex++;
-	if (!this->gridRoots.size()) {
+	if (!this->gridRoots.size() || !this->gridWeb.size()) {
 		std::vector<pair<int, int> > temp;
 		return temp;
 	}
-	return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
+	shownIndex = shownIndex % this->gridWeb.size();
+	map<size_t, Record>::iterator member = this->gridWeb.begin();
+	advance(member,rand() % shownIndex);
+	cout <<"#"<<member->first<< "  root: "<< (member->second.is_root ? "true" : "false") << "  height"<< member->second.node_height<<endl;
+	return member->second.startCoords;
+	//return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
 }
 std::vector<pair<int, int> > GridWeb::previousGrid() {
 	shownIndex--;
@@ -288,7 +293,12 @@ std::vector<pair<int, int> > GridWeb::previousGrid() {
 		std::vector<pair<int, int> > temp;
 		return temp;
 	}
-	return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
+	shownIndex = shownIndex % this->gridWeb.size();
+	map<size_t, Record>::iterator member = this->gridWeb.begin();
+	advance(member, rand() % shownIndex);
+	cout <<"#"<<member->first<< "  root: "<< (member->second.is_root ? "true" : "false") << "  height"<< member->second.node_height<<endl;
+	return member->second.startCoords;
+	//return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
 }
 
 int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {

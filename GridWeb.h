@@ -39,6 +39,7 @@ public:
 		for (unsigned int i = 0; i < r.startCoords.size(); i++) {
 			this->startCoords.push_back(r.startCoords[i]);
 		}
+		this->node_height = r.node_height;
 		this->root_length = this->parents.size();
 	}
 };
