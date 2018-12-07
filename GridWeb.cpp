@@ -160,11 +160,15 @@ WorkCycle WebWorker::updateGrid() {
 	if ((*this->globalMap).count(prev) > 0) {
 		//this grid exists on global map we just found a branch to get to it
 		// cout << "global repeated" << endl;
+		if((*this->personalMap).count(prev) != 0){
+			this->countParents(prev, (*this->globalMap)[prev].node_height);
+		}
 		return GLOBALREPEATED;
 	}
 	if ((*this->personalMap)[prev].child != 0) {
 		//this grid was already found
 		this->personalRoot.clear();
+		this->countParents(prev);
 		// cout << "personal repeated" << endl;
 		return REPEATED;
 	}
@@ -206,7 +210,7 @@ WorkCycle WebWorker::createRoot() {
 			return ROOTCREATED;
 		}
 	}
-	// cout << "root probably found?" << endl;
+	// cout << "root probably found ?" << endl;
 	return ROOTCREATED;
 }
 
@@ -228,10 +232,6 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			}
 		}
 		if (!exists) {
-			for(unsigned int i = 0; i < this->personalRoot.size(); i++){
-				this->countParents(this->personalRoot.member(i));
-				// cout << "wrote parent: "<<this->personalRoot.member(i) <<endl;
-			}
 			this->globalRoots->push_back(this->personalRoot);
 			// cout << "wrote global root" << endl;
 		}
@@ -296,7 +296,7 @@ int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {
 		cout << "countparents null seen"<<endl;
 		return count;
 	}
-	if(personalMap == nullptr || globalMap == nullptr || (*personalMap).size() < 1){
+	if(personalMap == nullptr || globalMap == nullptr){
 		cout << "somebody's map doesn't look correct"<<endl;
 		return count;
 	}
