@@ -16,7 +16,7 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];
 	for (unsigned int i = 0; i < numWork; i++) {
-		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots));
+		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots), i);
 	}
 }
 GridWeb::~GridWeb() {
@@ -28,6 +28,10 @@ GridWeb::~GridWeb() {
 void GridWeb::startSearching() {
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->start();
+		for(int j = 0; j < rand()%1000000 + 10000; j++){
+			cout << '-';
+		}
+		cout << "waited"<<endl;
 	}
 }
 void GridWeb::stopSearching() {
