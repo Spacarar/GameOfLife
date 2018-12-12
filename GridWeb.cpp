@@ -11,7 +11,7 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	/*if (numWork < 2 || numWork > 12) {
 		numWork = 2;
 	}*/
-	numWork = 1;
+	numWork = 2;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];
@@ -43,6 +43,7 @@ WebWorker::WebWorker() {
 	this->deadCode = this->grid->me();
 	this->workerThread = nullptr;
 	this->isSearching = false;
+	this->worker_id = 0;
 	if (personalMap != nullptr) {
 		delete personalMap;
 		personalMap = nullptr;
@@ -50,12 +51,13 @@ WebWorker::WebWorker() {
 	this->globalMap = nullptr;
 	this->globalRoots = nullptr;
 }
-WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots) {
+WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots, unsigned int id) {
 	this->grid = new Grid(gridSize);
 	this->deadCode = this->grid->me();
 	this->gridSize = gridSize;
 	this->globalMap = global;
 	this->globalRoots = gRoots;
+	this->worker_id = id;
 	this->isSearching = false;
 	if (personalMap != nullptr) {
 		delete personalMap;
@@ -99,6 +101,7 @@ int WebWorker::StartSearching(void *self) {
 		while (cycle == ROOTCREATED || cycle == GLOBALREPEATED) {
 			cycle = worker->dumpData(cycle); //dumps data in parent dictionary
 		}
+		cout << "#" << worker->worker_id<< " - count: " <<count <<endl;
 	}
 	return 0;
 }
@@ -249,7 +252,7 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 					(*this->globalMap)[myRecords->first].parents.push_back(myRecords->second.parents[i]);
 				}
 			}
-			cout << "Updated existing record" << endl;
+			//cout << "Updated existing record" << endl;
 		}
 	}
 	return DONE;

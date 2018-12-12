@@ -104,6 +104,7 @@ typedef enum WorkCycle {WORKLIVING, REPEATED, DEADROOT, GLOBALREPEATED, ROOTCREA
 class WebWorker {
 protected:
 	Grid * grid;
+	unsigned int worker_id;
 	unsigned int gridSize;
 	SDL_Thread *workerThread;
 	std::map<size_t, Record>* personalMap;
@@ -129,7 +130,7 @@ protected:
 
 public:
 	WebWorker();
-	WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots);
+	WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots, unsigned int id=0);
 	~WebWorker();
 	void start();
 	void stop();
