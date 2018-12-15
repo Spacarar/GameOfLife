@@ -217,6 +217,7 @@ WorkCycle WebWorker::createRoot() {
 	}
 	this->personalRoot.push(origin);
 	size_t temp = (*this->personalMap)[origin].child;
+	//FIXME this code looks off mostly child=0?
 	while (temp != 0 && !this->personalRoot.includes(temp)) {
 		this->personalRoot.push(temp);
 		temp = (*this->personalMap)[temp].child;
