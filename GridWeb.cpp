@@ -4,6 +4,7 @@
 GridWeb::GridWeb() {
 	this->gridWeb.clear();
 	this->shownIndex = 0;
+	this->is_searching = false;
 	this->worker = new WebWorker*;
 }
 GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
@@ -11,10 +12,11 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	/*if (numWork < 2 || numWork > 12) {
 		numWork = 2;
 	}*/
-	numWork = 2;
+	numWork = 1;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];
+	this->is_searching = false;
 	for (unsigned int i = 0; i < numWork; i++) {
 		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots), i);
 	}
@@ -25,10 +27,15 @@ GridWeb::~GridWeb() {
 	}
 	delete[] this->worker;
 }
+
+bool GridWeb::isSearching() {
+	return this->is_searching;
+}
 void GridWeb::startSearching() {
+	this->is_searching = true;
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->start();
-		for(int j = 0; j < rand()%1000000 + 10000; j++){
+		for(int j = 0; j < (rand()%1000000 + 100000) && i < this->numWorkers - 1; j++){
 			cout << '-';
 		}
 		cout << "waited"<<endl;
@@ -38,6 +45,7 @@ void GridWeb::stopSearching() {
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->stop();
 	}
+	this->is_searching = false;
 }
 
 //==============================================================================================
@@ -105,7 +113,7 @@ int WebWorker::StartSearching(void *self) {
 		while (cycle == ROOTCREATED || cycle == GLOBALREPEATED) {
 			cycle = worker->dumpData(cycle); //dumps data in parent dictionary
 		}
-		cout << "#" << worker->worker_id<< " - count: " <<count <<endl;
+		if(count%10 == 0)cout << "#" << worker->worker_id<< " - count: " <<count <<endl;
 	}
 	return 0;
 }
@@ -230,6 +238,9 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 		cout << "count too small to be worth writing" << endl;
 		return DONE;
 	}
+
+	//static sdl mutex
+	//lock
 	if (cy != GLOBALREPEATED) {
 		bool exists = false;
 		for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
@@ -259,6 +270,8 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			//cout << "Updated existing record" << endl;
 		}
 	}
+	//unlock
+
 	return DONE;
 }
 void WebWorker::clearGrid() {

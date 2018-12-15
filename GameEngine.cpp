@@ -146,6 +146,14 @@ void GameEngine::handleEvent(SDL_Event e) {
 		case SDLK_9:
 			FPS = 640;
 			break;
+		case SDLK_s:
+			if(this->gWeb->isSearching()){
+				this->gWeb->stopSearching();
+				cout << "search paused" << endl;
+			} else {
+				this->gWeb->startSearching();
+				cout << "search resumed" << endl;
+			}
 		}
 	}
 }
