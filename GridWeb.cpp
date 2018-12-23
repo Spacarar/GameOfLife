@@ -9,16 +9,15 @@ GridWeb::GridWeb() {
 }
 GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
-	/*if (numWork < 2 || numWork > 12) {
-		numWork = 2;
-	}*/
-	numWork = 1;
+	if (numWork < 1) numWork = 1;
+	if (numWork > 3) numWork = 3;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];
 	this->is_searching = false;
+	this->workerMutex = SDL_CreateMutex();
 	for (unsigned int i = 0; i < numWork; i++) {
-		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots), i);
+		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots), this->workerMutex, i);
 	}
 }
 GridWeb::~GridWeb() {
@@ -26,6 +25,7 @@ GridWeb::~GridWeb() {
 		delete this->worker[i];
 	}
 	delete[] this->worker;
+	SDL_DestroyMutex(this->workerMutex);
 }
 
 bool GridWeb::isSearching() {
@@ -35,10 +35,6 @@ void GridWeb::startSearching() {
 	this->is_searching = true;
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->start();
-		for(int j = 0; j < (rand()%1000000 + 100000) && i < this->numWorkers - 1; j++){
-			cout << '-';
-		}
-		cout << "waited"<<endl;
 	}
 }
 void GridWeb::stopSearching() {
@@ -63,7 +59,7 @@ WebWorker::WebWorker() {
 	this->globalMap = nullptr;
 	this->globalRoots = nullptr;
 }
-WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots, unsigned int id) {
+WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots, SDL_mutex *mute, unsigned int id) {
 	this->grid = new Grid(gridSize);
 	this->deadCode = this->grid->me();
 	this->gridSize = gridSize;
@@ -71,10 +67,12 @@ WebWorker::WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, st
 	this->globalRoots = gRoots;
 	this->worker_id = id;
 	this->isSearching = false;
+	this->writeMutex = mute;
 	if (personalMap != nullptr) {
 		delete personalMap;
 		personalMap = nullptr;
 	}
+
 	this->personalMap = new map<size_t, Record>;
 	this->workerThread = nullptr;
 }
@@ -239,39 +237,43 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 		cout << "count too small to be worth writing" << endl;
 		return DONE;
 	}
-
-	//static sdl mutex
-	//lock
-	if (cy != GLOBALREPEATED) {
-		bool exists = false;
-		for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
-			if ((*this->globalRoots)[i].isMatching(this->personalRoot)) {
-				exists = true;
-				break;
-			}
-		}
-		if (!exists) {
-			this->globalRoots->push_back(this->personalRoot);
-			// cout << "wrote global root" << endl;
-		}
-	}
-	std::map<size_t, Record>::iterator myRecords;//records from the worker
-	for (myRecords = (*this->personalMap).begin(); myRecords != (*this->personalMap).end(); myRecords++) {
-		if (this->globalMap->count(myRecords->first) <= 0) {
-			(*this->globalMap)[myRecords->first] = Record(myRecords->second);
-			//cout << "Created new record" << endl;
-		}
-		else {
-			for (unsigned int i = 0; i < myRecords->second.parents.size(); i++) {
-				//if this one already exists extend its parent's to whatever we found too
-				if (!(*this->globalMap)[myRecords->first].parentsIncludes(myRecords->second.parents[i])) {
-					(*this->globalMap)[myRecords->first].parents.push_back(myRecords->second.parents[i]);
+	if(SDL_LockMutex(writeMutex) == 0){
+		cout << "writing to the global dictionary!"<<endl;
+		if (cy != GLOBALREPEATED) {
+			bool exists = false;
+			for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
+				if ((*this->globalRoots)[i].isMatching(this->personalRoot)) {
+					exists = true;
+					break;
 				}
 			}
-			//cout << "Updated existing record" << endl;
+			if (!exists) {
+				this->globalRoots->push_back(this->personalRoot);
+				// cout << "wrote global root" << endl;
+			}
 		}
+		std::map<size_t, Record>::iterator myRecords;//records from the worker
+		for (myRecords = (*this->personalMap).begin(); myRecords != (*this->personalMap).end(); myRecords++) {
+			if (this->globalMap->count(myRecords->first) <= 0) {
+				(*this->globalMap)[myRecords->first] = Record(myRecords->second);
+				//cout << "Created new record" << endl;
+			}
+			else {
+				for (unsigned int i = 0; i < myRecords->second.parents.size(); i++) {
+					//if this one already exists extend its parent's to whatever we found too
+					if (!(*this->globalMap)[myRecords->first].parentsIncludes(myRecords->second.parents[i])) {
+						(*this->globalMap)[myRecords->first].parents.push_back(myRecords->second.parents[i]);
+					}
+				}
+				//cout << "Updated existing record" << endl;
+			}
+		}
+
+		cout << "letting go of the global dictionary"<<endl;
+		SDL_UnlockMutex(writeMutex);
+	} else {
+		cout << "could not lock mutex!" <<endl;
 	}
-	//unlock
 
 	return DONE;
 }

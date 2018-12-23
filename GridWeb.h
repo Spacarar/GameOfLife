@@ -102,6 +102,9 @@ class GridRoot {
 
 typedef enum WorkCycle {WORKLIVING, REPEATED, DEADROOT, GLOBALREPEATED, ROOTCREATED, DONE, WORKFAILED} WorkCycle;
 class WebWorker {
+	private:
+		SDL_mutex *writeMutex;
+
 	protected:
 		Grid * grid;
 		unsigned int worker_id;
@@ -130,7 +133,7 @@ class WebWorker {
 
 	public:
 		WebWorker();
-		WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots, unsigned int id=0);
+		WebWorker(unsigned int gridSize, std::map<size_t, Record>* global, std::vector<GridRoot>* gRoots,SDL_mutex *mute, unsigned int id=0);
 		~WebWorker();
 		void start();
 		void stop();
@@ -144,6 +147,7 @@ protected:
 	unsigned int numWorkers;
 	WebWorker** worker; //array of pointers
 	unsigned int shownIndex;
+	SDL_mutex *workerMutex;
 
 public:
 	GridWeb();
