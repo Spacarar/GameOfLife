@@ -11,6 +11,7 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
 	if (numWork < 1) numWork = 1;
 	if (numWork > 3) numWork = 3;
+	cout << "Initializing web with " << numWork << " worker threads.\nPress 's' to toggle search" << endl;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];
@@ -238,7 +239,6 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 		return DONE;
 	}
 	if(SDL_LockMutex(writeMutex) == 0){
-		cout << "writing to the global dictionary!"<<endl;
 		if (cy != GLOBALREPEATED) {
 			bool exists = false;
 			for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
@@ -269,7 +269,6 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			}
 		}
 
-		cout << "letting go of the global dictionary"<<endl;
 		SDL_UnlockMutex(writeMutex);
 	} else {
 		cout << "could not lock mutex!" <<endl;
