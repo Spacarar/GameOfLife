@@ -213,10 +213,12 @@ WorkCycle WebWorker::createRoot() {
 		cout << "origin has no child" << endl;
 		return WORKFAILED;
 	}
+	(*this->personalMap)[origin].is_root = true;
 	this->personalRoot.push(origin);
 	size_t temp = (*this->personalMap)[origin].child;
 	//FIXME this code looks off mostly child=0?
 	while (temp != 0 && !this->personalRoot.includes(temp)) {
+		(*this->personalMap)[temp].is_root = true;
 		this->personalRoot.push(temp);
 		temp = (*this->personalMap)[temp].child;
 		if (temp == origin) {
