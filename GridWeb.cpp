@@ -33,12 +33,14 @@ bool GridWeb::isSearching() {
 	return this->is_searching;
 }
 void GridWeb::startSearching() {
+	cout << "search started" << endl;
 	this->is_searching = true;
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->start();
 	}
 }
 void GridWeb::stopSearching() {
+	cout << "search stopped" << endl;
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		this->worker[i]->stop();
 	}
@@ -96,13 +98,13 @@ int WebWorker::StartSearching(void *self) {
 		return -1;
 	}
 	WorkCycle cycle = WORKLIVING;
-	int count = 0;
+	// int count = 0;
 	while (worker->isSearching) {
 		worker->clearGrid();
 		worker->grid->setState(worker->selectStartingGrid());
 		worker->updateGrid(); //update once to help prevent erroneous results
 		cycle = WORKLIVING;
-		count++;
+		// count++;
 		while (cycle == WORKLIVING && worker->isSearching) {
 			cycle = worker->updateGrid();
 		}
@@ -112,7 +114,6 @@ int WebWorker::StartSearching(void *self) {
 		while (cycle == ROOTCREATED || cycle == GLOBALREPEATED) {
 			cycle = worker->dumpData(cycle); //dumps data in parent dictionary
 		}
-		if(count%10 == 0)cout << "#" << worker->worker_id<< " - count: " <<count <<endl;
 	}
 	return 0;
 }
@@ -173,7 +174,6 @@ WorkCycle WebWorker::updateGrid() {
 	size_t next = 0;
 	if ((*this->globalMap).count(prev) > 0) {
 		//this grid exists on global map we just found a branch to get to it
-		// cout << "global repeated" << endl;
 		if((*this->personalMap).count(prev) != 0){
 			this->countParents(prev, (*this->globalMap)[prev].node_height);
 		}
@@ -183,7 +183,6 @@ WorkCycle WebWorker::updateGrid() {
 		//this grid was already found
 		this->personalRoot.clear();
 		this->countParents(prev);
-		// cout << "personal repeated" << endl;
 		return REPEATED;
 	}
 	else {
@@ -337,7 +336,7 @@ int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {
 		return count;
 	}
 	if((*seen)[node] == true){
-		cout << "node parents circular reference" << endl;
+		// cout << "node parents circular reference" << endl;
 		return count;
 	}
 	(*personalMap)[node].node_height = count;

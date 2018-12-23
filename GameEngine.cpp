@@ -41,16 +41,6 @@ void GameEngine::initSDL() {
 		printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
 		SDL_Quit();
 	}
-	//Initialize SDL_mixer
-	// if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
-	// 	printf("SDL2_mixer init error\n CLOSING...");
-	// 	SDL_Quit();
-	// }
-	// if (TTF_Init() == -1) {
-	// 	printf("SDL2_ttf init error\n CLOSING...");
-	// 	SDL_Quit();
-	// }
-	cout << "endl init sdl" << endl;
 }
 void GameEngine::update() {
 	totalFrames++;
@@ -149,10 +139,8 @@ void GameEngine::handleEvent(SDL_Event e) {
 		case SDLK_s:
 			if(this->gWeb->isSearching()){
 				this->gWeb->stopSearching();
-				cout << "search paused" << endl;
 			} else {
 				this->gWeb->startSearching();
-				cout << "search resumed" << endl;
 			}
 		}
 	}

@@ -45,6 +45,7 @@ protected:
 	static int startFallerUpdate(void *self);
 
 	int neighbors(int x, int y);
+	bool pixelCheck(int x, int y); //check nullptrs
 
 public:
 	Grid(int gridSize = 4, int pixelSize = 2);
