@@ -32,7 +32,17 @@ void GameEngine::initSDL() {
 		printf("Could not initialize SDL: %s.\n", SDL_GetError());
 		exit(-1);
 	}
-	gWindow = SDL_CreateWindow("Conway's Game of Life", 50, 50, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_DisplayMode current;
+	for(int i = 0; i < SDL_GetNumVideoDisplays(); ++i){
+		int should_be_zero = SDL_GetCurrentDisplayMode(i, &current);
+		if(should_be_zero != 0){
+			SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
+		} else {
+			SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz.", i, current.w, current.h, current.refresh_rate);
+		}
+	}
+
+	gWindow = SDL_CreateWindow("Conway's Game of Life", 50, 50, current.w - 160, current.h - 90, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
 		printf("Could not create window!");
 	}
@@ -71,6 +81,7 @@ int GameEngine::searchPatterns(void* self) {
 	GameEngine *g = (GameEngine*)self;
 	//g->gPlayer->start();
 	g->gWeb->startSearching();
+	cout << "SEARCH PATTERNS RETURN" << endl;
 	return 0;
 }
 
@@ -155,8 +166,6 @@ void GameEngine::run() {
 
 	updateThread = SDL_CreateThread(updateGame, "Update", this);
 	drawThread = SDL_CreateThread(renderGame, "Render", this);
-	searchThread = SDL_CreateThread(searchPatterns, "Search", this);
-	this->gWeb->stopSearching();
 	while (isRunning) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
