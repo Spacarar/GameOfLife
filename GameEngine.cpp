@@ -162,7 +162,7 @@ GameEngine::~GameEngine() {
 }
 
 void GameEngine::run() {
-	int updateResult, drawResult, searchResult;
+	int updateResult, drawResult;
 
 	updateThread = SDL_CreateThread(updateGame, "Update", this);
 	drawThread = SDL_CreateThread(renderGame, "Render", this);
@@ -189,7 +189,6 @@ void GameEngine::run() {
 	printf("FRAMES: %d FPS: %lld", totalFrames, (totalFrames*MILLIS_PER_SECOND) / ((std::chrono::duration_cast<std::chrono::milliseconds>(mClock::now() - sTime).count())));
 	SDL_WaitThread(updateThread, &updateResult);
 	SDL_WaitThread(drawThread, &drawResult);
-	SDL_WaitThread(searchThread, &searchResult);
 	quit();
 	std::cin.get();
 

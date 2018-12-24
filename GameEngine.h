@@ -19,7 +19,7 @@ class GameEngine {
 	GridMode g_mode;
 	GameState gameState;
 
-	SDL_Thread *updateThread, *drawThread, *searchThread;
+	SDL_Thread *updateThread, *drawThread;
 
 	SDL_Window *gWindow;
 	SDL_Renderer *ren;
