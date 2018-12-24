@@ -29,9 +29,9 @@ class Pattern {
                     coordinates.push_back(make_pair(temp1,temp2));
                 }
                 fin.close();
-            } catch(ios_base::failure err) {
+            } catch(ifstream::failure &err) {
                 cout << "could not open: " << filename << endl;
-                this->name = "Error pattern",
+                this->name = "ioError pattern",
                 this->coordinates.clear();
             }
         }
