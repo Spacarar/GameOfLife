@@ -45,7 +45,7 @@ void GameEngine::initSDL() {
 }
 void GameEngine::update() {
 	totalFrames++;
-	if(g_mode == G_PLAY){
+	if (g_mode == G_PLAY) {
 		grid->update();
 	}
 	
@@ -96,7 +96,7 @@ void GameEngine::handleEvent(SDL_Event e) {
 	static int mouseY;
 	if (e.type == SDL_MOUSEBUTTONDOWN) {
 		SDL_GetMouseState(&mouseX, &mouseY);
-		if(g_mode == G_PLAY){
+		if (g_mode == G_PLAY) {
 			if (e.button.button == SDL_BUTTON_LEFT) {
 				grid->clear();
 				//grid->setState(gPlayer->previousFound());
@@ -113,15 +113,15 @@ void GameEngine::handleEvent(SDL_Event e) {
 	else if (e.type == SDL_KEYDOWN) {
 		int FPS_Map[10] = {0, 2, 5, 10, 20, 40,80, 160,320, 640};
 		SDL_Keycode KEY_Map[10] = {SDLK_0, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7, SDLK_8, SDLK_9};
-		for(int i = 0; i < 9; i++){
-			if(e.key.keysym.sym == KEY_Map[i]) {
+		for (int i = 0; i < 9; i++) {
+			if (e.key.keysym.sym == KEY_Map[i]) {
 				FPS = FPS_Map[i];
 				i == 0 ? g_mode = G_FREEZE : g_mode = G_PLAY;
 			}
 		}
 		switch (e.key.keysym.sym) {
 		case SDLK_s:
-			if(this->gWeb->isSearching()){
+			if (this->gWeb->isSearching()) {
 				this->gWeb->stopSearching();
 			} else {
 				this->gWeb->startSearching();

@@ -126,7 +126,7 @@ WorkCycle WebWorker::updateGrid() {
 	size_t next = 0;
 	if ((*this->globalMap).count(prev) > 0) {
 		//this grid exists on global map we just found a branch to get to it
-		if((*this->personalMap).count(prev) != 0){
+		if ((*this->personalMap).count(prev) != 0) {
 			this->countParents(prev, (*this->globalMap)[prev].node_height);
 		}
 		return GLOBALREPEATED;
@@ -191,7 +191,7 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 		cout << "count too small to be worth writing" << endl;
 		return DONE;
 	}
-	if(SDL_LockMutex(writeMutex) == 0){
+	if (SDL_LockMutex(writeMutex) == 0) {
 		if (cy != GLOBALREPEATED) {
 			bool exists = false;
 			for (unsigned int i = 0; i < this->globalRoots->size(); i++) {
@@ -250,25 +250,25 @@ void WebWorker::stop() {
 }
 
 int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {
-	if(seen == nullptr){
+	if (seen == nullptr) {
 		cout << "countparents null seen"<<endl;
 		return count;
 	}
-	if(personalMap == nullptr || globalMap == nullptr){
+	if (personalMap == nullptr || globalMap == nullptr) {
 		cout << "somebody's map doesn't look correct"<<endl;
 		return count;
 	}
-	if((*personalMap).count(node) < 1){
+	if ((*personalMap).count(node) < 1) {
 		cout << "node passed does not exist" <<endl;
 		return count;
 	}
-	if((*seen)[node] == true){
+	if ((*seen)[node] == true) {
 		// cout << "node parents circular reference" << endl;
 		return count;
 	}
 	(*personalMap)[node].node_height = count;
 	(*seen)[node] = true;
-	for(unsigned int i = 0; i < (*personalMap)[node].parents.size(); i++){
+	for (unsigned int i = 0; i < (*personalMap)[node].parents.size(); i++) {
 		return countParents((*personalMap)[node].parents[i], count+1, seen);
 	}
 	return count;

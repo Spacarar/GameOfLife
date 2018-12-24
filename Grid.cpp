@@ -43,7 +43,7 @@ size_t Grid::me() {
 
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
-			if(!pixelCheck(x, y)) return 0;
+			if (!pixelCheck(x, y)) return 0;
 			if (pixel[y][x]->current) representation.append(to_string(x) + "," + to_string(y) + "|");
 		}
 	}
@@ -102,7 +102,7 @@ void Grid::planMove() {
 	int ee = 0;
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
-			if(!pixelCheck(x, y))return;
+			if (!pixelCheck(x, y))return;
 			ee = neighbors(y, x);
 			//overpopulation or underpopulation
 			if (pixel[y][x]->current) {
@@ -124,7 +124,7 @@ void Grid::planMove() {
 void Grid::updateGrid() {
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
-			if(!pixelCheck(x, y))return;
+			if (!pixelCheck(x, y))return;
 			pixel[y][x]->current = pixel[y][x]->sync;
 		}
 	}
@@ -159,7 +159,7 @@ void Grid::draw(SDL_Renderer *ren) {
 	drawRect.h = pixelSize;
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
-			if(!pixelCheck(x, y)) return;
+			if (!pixelCheck(x, y)) return;
 			if (pixel[y][x]->current) {
 				SDL_SetRenderDrawColor(ren, 230, 230, 240, 255);
 				drawRect.x = x * pixelSize;
@@ -242,7 +242,7 @@ void Grid::setState(vector<pair<int, int> > sc) {
 void Grid::clear() {
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
-			if(!pixelCheck(x, y))return;
+			if (!pixelCheck(x, y))return;
 			pixel[y][x]->current = false;
 			pixel[y][x]->sync = false;
 		}
@@ -315,15 +315,15 @@ int Grid::startFallerUpdate(void *self) {
 }
 
 bool Grid::pixelCheck(int x, int y) {
-	if(this->pixel == nullptr){
+	if (this->pixel == nullptr) {
 		cout << "pixel was null" <<endl;
 		return false;
 	}
-	if(this->pixel[y] == nullptr) {
+	if (this->pixel[y] == nullptr) {
 		cout << "pixel["<<y<<"] was null"<<endl;
 		return false;
 	}
-	if(this->pixel[y][x] == nullptr) {
+	if (this->pixel[y][x] == nullptr) {
 		cout << "pixel["<<y<<"]["<<x<<"] was null"<<endl;
 		return false;
 	}
