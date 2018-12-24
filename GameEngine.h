@@ -7,7 +7,7 @@
 
 typedef std::chrono::steady_clock mClock;
 typedef enum GameState {MAINMENU, SEARCHING, FREEPLAY, EXIT} GameState;
-
+typedef enum GridMode {G_PLAY, G_FREEZE} GridMode;
 const int MILLIS_PER_SECOND = 1000;
 class GameEngine {
 	int SCR_WIDTH;
@@ -16,6 +16,7 @@ class GameEngine {
 	int totalFrames;
 	mClock::time_point sTime;
 	bool isRunning;
+	GridMode g_mode;
 	GameState gameState;
 
 	SDL_Thread *updateThread, *drawThread, *searchThread;

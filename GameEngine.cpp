@@ -25,6 +25,7 @@ void GameEngine::init(unsigned int gridSize, unsigned int numWorkers) {
 	sTime = lUpdate = lDraw = mClock::now();
 	isRunning = true;
 	gameState = MAINMENU;
+	g_mode = G_PLAY;
 }
 void GameEngine::initSDL() {
 	if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)) {
@@ -44,7 +45,10 @@ void GameEngine::initSDL() {
 }
 void GameEngine::update() {
 	totalFrames++;
-	grid->update();
+	if(g_mode == G_PLAY){
+		grid->update();
+	}
+	
 }
 
 int GameEngine::updateGame(void* self) {
@@ -92,50 +96,30 @@ void GameEngine::handleEvent(SDL_Event e) {
 	static int mouseY;
 	if (e.type == SDL_MOUSEBUTTONDOWN) {
 		SDL_GetMouseState(&mouseX, &mouseY);
-		if (e.button.button == SDL_BUTTON_LEFT) {
-			grid->clear();
-			//grid->setState(gPlayer->previousFound());
-			grid->setState(gWeb->previousGrid());
-		}
-		if (e.button.button == SDL_BUTTON_RIGHT) {
-			grid->clear();
-			//grid->setState(gPlayer->nextFound());
-			grid->setState(gWeb->nextGrid());
-			//grid.drawGlider(mouseX, mouseY);
+		if(g_mode == G_PLAY){
+			if (e.button.button == SDL_BUTTON_LEFT) {
+				grid->clear();
+				//grid->setState(gPlayer->previousFound());
+				grid->setState(gWeb->previousGrid());
+			}
+			if (e.button.button == SDL_BUTTON_RIGHT) {
+				grid->clear();
+				//grid->setState(gPlayer->nextFound());
+				grid->setState(gWeb->nextGrid());
+				//grid.drawGlider(mouseX, mouseY);
+			}
 		}
 	}
 	else if (e.type == SDL_KEYDOWN) {
+		int FPS_Map[10] = {0, 2, 5, 10, 20, 40,80, 160,320, 640};
+		SDL_Keycode KEY_Map[10] = {SDLK_0, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7, SDLK_8, SDLK_9};
+		for(int i = 0; i < 9; i++){
+			if(e.key.keysym.sym == KEY_Map[i]) {
+				FPS = FPS_Map[i];
+				i == 0 ? g_mode = G_FREEZE : g_mode = G_PLAY;
+			}
+		}
 		switch (e.key.keysym.sym) {
-		case SDLK_0:
-			FPS = 0;
-			break;
-		case SDLK_1:
-			FPS = 2;
-			break;
-		case SDLK_2:
-			FPS = 5;
-			break;
-		case SDLK_3:
-			FPS = 10;
-			break;
-		case SDLK_4:
-			FPS = 20;
-			break;
-		case SDLK_5:
-			FPS = 40;
-			break;
-		case SDLK_6:
-			FPS = 80;
-			break;
-		case SDLK_7:
-			FPS = 160;
-			break;
-		case SDLK_8:
-			FPS = 320;
-			break;
-		case SDLK_9:
-			FPS = 640;
-			break;
 		case SDLK_s:
 			if(this->gWeb->isSearching()){
 				this->gWeb->stopSearching();
@@ -172,6 +156,7 @@ void GameEngine::run() {
 	updateThread = SDL_CreateThread(updateGame, "Update", this);
 	drawThread = SDL_CreateThread(renderGame, "Render", this);
 	searchThread = SDL_CreateThread(searchPatterns, "Search", this);
+	this->gWeb->stopSearching();
 	while (isRunning) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
