@@ -110,7 +110,6 @@ void Grid::planMove() {
 					pixel[y][x]->sync = false;
 				}
 				else {
-					//this wasn't always working
 					pixel[y][x]->sync = true;
 				}
 				//population growth
@@ -134,13 +133,6 @@ void Grid::updateGrid() {
 void Grid::update(bool threaded) {
 	this->planMove();
 	this->updateGrid();
-	//if (this->gridSize >= 200) {
-	//	this->updateThreaded();
-	//}
-	//else {
-	//	this->planMove();
-	//	this->updateGrid();
-	//}
 }
 int Grid::updateThreaded() {
 	int riserStatus = 0, fallerStatus = 0;

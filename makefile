@@ -1,4 +1,4 @@
-OBJS = GameOfLife.cpp GameEngine.cpp GridWeb.cpp Grid.cpp
+OBJS = GameOfLife.cpp GameEngine.cpp GridWeb.cpp WebWorker.cpp Grid.cpp
 
 CC = g++
 

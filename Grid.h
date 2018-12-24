@@ -66,5 +66,4 @@ public:
 
 	bool operator==(Grid g);
 
-
 };
