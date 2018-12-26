@@ -17,6 +17,7 @@ PatternManager::PatternManager(string baseFile) {
                 cout << "read: "<< temp.me() <<endl;
             }
         }
+        fin.close();
     } catch(ifstream::failure &readError) {
         cout << "could not create pattern managaer from: " << baseFile << endl;
         this->patterns.clear();
