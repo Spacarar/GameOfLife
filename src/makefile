@@ -12,4 +12,4 @@ DEV_FLAGS = -Wall -std=c++14
 
 L_FLAGS = -lSDL2main -lSDL2 -lmingw32
 all : $(OBJS)
-	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(DEV_FLAGS) $(L_FLAGS) -o build\\ConwaysGame.exe
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(DEV_FLAGS) $(L_FLAGS) -o ..\\build\\ConwaysGame.exe
