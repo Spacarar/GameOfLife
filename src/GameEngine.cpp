@@ -84,7 +84,6 @@ int GameEngine::renderGame(void* self) {
 }
 int GameEngine::searchPatterns(void* self) {
 	GameEngine *g = (GameEngine*)self;
-	//g->gPlayer->start();
 	g->gWeb->startSearching();
 	cout << "SEARCH PATTERNS RETURN" << endl;
 	return 0;
@@ -115,14 +114,11 @@ void GameEngine::handleEvent(SDL_Event e) {
 		if (g_mode == G_PLAY) {
 			if (e.button.button == SDL_BUTTON_LEFT) {
 				grid->clear();
-				//grid->setState(gPlayer->previousFound());
 				grid->setState(gWeb->previousGrid());
 			}
 			if (e.button.button == SDL_BUTTON_RIGHT) {
 				grid->clear();
-				//grid->setState(gPlayer->nextFound());
 				grid->setState(gWeb->nextGrid());
-				//grid.drawGlider(mouseX, mouseY);
 			}
 		}
 	}
@@ -162,7 +158,6 @@ GameEngine::GameEngine(unsigned int GridSize, unsigned int gridWork) {
 	initSDL();
 }
 GameEngine::~GameEngine() {
-	//delete gPlayer;
 	delete gWeb;
 }
 
@@ -185,9 +180,6 @@ void GameEngine::run() {
 			if (isRunning) handleEvent(event);
 		}
 	}
-	//if (gPlayer != nullptr) {
-	//	gPlayer->stop();
-	//}
 	if (gWeb != nullptr) {
 		gWeb->stopSearching();
 	}
@@ -201,8 +193,8 @@ void GameEngine::run() {
 void GameEngine::quit() {
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(gWindow);
+	TTF_Quit();
 	// Mix_Quit();
-	// TTF_Quit();
 	// IMG_Quit();
 	SDL_Quit();
 }
