@@ -3,13 +3,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "GridWeb.h"
+#include "global_enumerations.h"
 
-
-
-typedef std::chrono::steady_clock mClock;
-typedef enum GameState {MAINMENU, SEARCHING, FREEPLAY, EXIT} GameState;
-typedef enum GridMode {G_PLAY, G_FREEZE} GridMode;
-const int MILLIS_PER_SECOND = 1000;
 class GameEngine {
 	int SCR_WIDTH;
 	int SCR_HEIGHT;

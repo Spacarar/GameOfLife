@@ -20,6 +20,7 @@ class Button {
         SDL_Color text_color;
         SDL_Color button_color;
         SDL_Texture* texture;
+        bool highlight;
 
     public:
         Button() {
@@ -27,6 +28,7 @@ class Button {
         }
         Button(SDL_Renderer *rend, int x, int y, int w, int h, SDL_Color textColor, SDL_Color buttonColor) {
             button_rect = {x,y,w,h};
+            highlight = false;
             text = "default button";
             text_rect = {x - 10, y - 10, w - 20, h - 20};
             text_color = textColor;
