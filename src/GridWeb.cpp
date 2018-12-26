@@ -69,7 +69,7 @@ std::vector<pair<int, int> > GridWeb::previousGrid() {
 	shownIndex = shownIndex % this->gridWeb.size();
 	map<size_t, Record>::iterator member = this->gridWeb.begin();
 	advance(member, rand() % shownIndex);
-	cout <<"#"<<member->first<< "  root: "<< (member->second.is_root ? "true" : "false") << "  height"<< member->second.node_height<<endl;
+	cout <<"#"<<member->first<< "  root: "<< (member->second.is_root ? "true" : "false") << "  height: "<< member->second.node_height<<endl;
 	return member->second.startCoords;
 	//return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
 }

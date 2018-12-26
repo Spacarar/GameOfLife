@@ -52,6 +52,11 @@ void GameEngine::initSDL() {
 		printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
 		SDL_Quit();
 	}
+
+	if (TTF_Init() == -1) {
+			printf("SDL2_ttf init error\n CLOSING...");
+			SDL_Quit();
+	}
 }
 void GameEngine::update() {
 	totalFrames++;

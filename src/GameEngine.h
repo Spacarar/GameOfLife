@@ -1,6 +1,7 @@
 #pragma once
 #include<chrono>
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "GridWeb.h"
 
 
@@ -26,8 +27,7 @@ class GameEngine {
 	mClock::time_point lUpdate, lDraw;
 
 	Grid *grid; //for drawing
-	//GridPlayer *gPlayer;
-	GridWeb *gWeb;
+	GridWeb *gWeb; //for searching patterns
 
 	void init(unsigned int gridSize = 50, unsigned int numWorkers = 2);
 	void initSDL();
