@@ -51,6 +51,14 @@ void GridWeb::stopSearching() {
 	this->is_searching = false;
 }
 
+void GridWeb::clear() {
+	bool wasSearching = this->is_searching;
+	if (this->is_searching) this->stopSearching();
+	this->gridWeb.clear();
+	this->gridRoots.clear();
+	if (wasSearching) cout << "Clear caused search to stop!" << endl;
+}
+
 std::vector<pair<int, int> > GridWeb::nextGrid() {
 	shownIndex++;
 	if (!this->gridRoots.size() || !this->gridWeb.size()) {

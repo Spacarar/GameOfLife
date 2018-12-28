@@ -30,12 +30,12 @@ class Button {
             button_rect = {x,y,w,h};
             highlight = false;
             text = "default button";
-            text_rect = {x - 10, y - 10, w - 20, h - 20};
+            text_rect = {x + 10, y + 10, w - 20, h - 20};
             text_color = textColor;
             button_color = buttonColor;
-            font = TTF_OpenFont("..\\fonts\\default.ttf", 32);
+            font = TTF_OpenFont("..\\fonts\\default.otf", 32);
             if(font == nullptr) {
-                cout << "Could not open fonts/default.ttf" << endl;
+                cout << "Could not open fonts/default.otf" << endl;
             }
             updateTexture(rend);
         }
@@ -47,7 +47,7 @@ class Button {
         virtual void draw(SDL_Renderer *rend) {
             if (texture != nullptr) {
                 SDL_SetRenderDrawColor(rend, button_color.r, button_color.g, button_color.b, button_color.a);
-                SDL_RenderDrawRect(rend, &button_rect);
+                SDL_RenderFillRect(rend, &button_rect);
                 SDL_SetRenderDrawColor(rend, text_color.r, text_color.g, text_color.b, text_color.a);
 			    SDL_RenderCopy(rend, texture, NULL, &text_rect);
             }
@@ -61,13 +61,13 @@ class Button {
         }
 
         void changeTextSize(SDL_Renderer* rend, int x, int y, int w, int h) {
-            this->button_rect = {x + 10, y + 10, w + 20, h + 20};
+            this->button_rect = {x - 10, y - 10, w + 20, h + 20};
             this->text_rect = {x, y, w, h};
             updateTexture(rend);
         }
 
         void changeTextSize(SDL_Renderer *rend, SDL_Rect rect) {
-            this->button_rect = {rect.x + 10, rect.y + 10, rect.w + 20, rect.h + 20};
+            this->button_rect = {rect.x - 10, rect.y - 10, rect.w + 20, rect.h + 20};
             this->text_rect = {rect.x, rect.y, rect.w, rect.h};
             updateTexture(rend);
         }

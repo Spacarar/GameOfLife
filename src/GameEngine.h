@@ -40,7 +40,14 @@ class GameEngine {
 	bool drawRequired();
 
 	void handleEvent(SDL_Event e);
+	void handleMainMenuEvent(SDL_Event &e);
+	void handleSearchingEvent(SDL_Event &e);
+	void handlePausedEvent(SDL_Event &e);
+
 	void draw();
+	void drawMainMenu();
+	void drawGameplay();
+	void drawPauseMenu();
 
 public:
 	GameEngine();

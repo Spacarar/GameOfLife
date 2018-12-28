@@ -34,4 +34,4 @@ class GameStateButton:public Button {
             return NONE;
         }
 
-}
+};

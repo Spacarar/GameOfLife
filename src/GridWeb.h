@@ -27,6 +27,8 @@ public:
 	void startSearching();
 	void stopSearching();
 
+	void clear();
+	
 	std::vector<std::pair<int, int> > nextGrid();
 	std::vector<std::pair<int, int> > previousGrid();
 
