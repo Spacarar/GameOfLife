@@ -27,6 +27,7 @@ void GameEngine::init(unsigned int gridSize, unsigned int numWorkers) {
 	gameState = MAINMENU;
 	g_mode = G_PLAY;
 }
+
 void GameEngine::initSDL() {
 	if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1)) {
 		printf("Could not initialize SDL: %s.\n", SDL_GetError());
@@ -58,6 +59,11 @@ void GameEngine::initSDL() {
 			SDL_Quit();
 	}
 }
+
+void GameEngine::initButtons() {
+	
+}
+
 void GameEngine::update() {
 	totalFrames++;
 	if (g_mode == G_PLAY) {
@@ -75,6 +81,7 @@ int GameEngine::updateGame(void* self) {
 	}
 	return 0;
 }
+
 int GameEngine::renderGame(void* self) {
 	GameEngine *g = (GameEngine*)self;
 	while (g->isRunning) {
@@ -82,6 +89,7 @@ int GameEngine::renderGame(void* self) {
 	}
 	return 0;
 }
+
 int GameEngine::searchPatterns(void* self) {
 	GameEngine *g = (GameEngine*)self;
 	g->gWeb->startSearching();
@@ -97,6 +105,7 @@ bool GameEngine::updateRequired() {
 	}
 	return false;
 }
+
 bool GameEngine::drawRequired() {
 	long long difference = (long long)(MILLIS_PER_SECOND / (FPS + 1)) - std::chrono::duration_cast<std::chrono::milliseconds>(mClock::now() - lDraw).count();
 	if (difference <= 0) {
@@ -153,13 +162,16 @@ GameEngine::GameEngine() {
 	initSDL();
 
 }
+
 GameEngine::GameEngine(unsigned int GridSize, unsigned int gridWork) {
 	init(GridSize, gridWork);
 	initSDL();
 }
+
 GameEngine::~GameEngine() {
 	delete gWeb;
 }
+
 
 void GameEngine::run() {
 	int updateResult, drawResult;
@@ -190,6 +202,7 @@ void GameEngine::run() {
 	std::cin.get();
 
 }
+
 void GameEngine::quit() {
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(gWindow);

@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "GridWeb.h"
+#include "GameStateButton.h"
 #include "global_enumerations.h"
 
 class GameEngine {
@@ -24,8 +25,11 @@ class GameEngine {
 	Grid *grid; //for drawing
 	GridWeb *gWeb; //for searching patterns
 
+	GameStateButton main_menu_button, exit_button, pause_button, new_game_button, clear_web_button;
+
 	void init(unsigned int gridSize = 50, unsigned int numWorkers = 2);
 	void initSDL();
+	void initButtons();
 	void update();
 	
 	static int updateGame(void* self);

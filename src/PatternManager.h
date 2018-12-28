@@ -16,6 +16,7 @@ class Pattern {
             name = "Blank pattern";
             coordinates.clear();
         }
+        
         Pattern(string filename) {
             ifstream fin;
             int readNum;
@@ -35,6 +36,7 @@ class Pattern {
                 this->coordinates.clear();
             }
         }
+
         Pattern(string name, vector<pair< int, int> > coords) {
             this->name = name;
             this->coordinates.clear();
@@ -42,6 +44,7 @@ class Pattern {
                 this->coordinates.push_back(make_pair(coords[i].first, coords[i].second));
             }
         }
+
         Pattern(const Pattern &p) {
             this->name = p.name;
             this->coordinates.clear();
@@ -49,6 +52,7 @@ class Pattern {
                 this->coordinates.push_back(make_pair(p.coordinates[i].first, p.coordinates[i].second));
             }
         }
+
         void save(string filename) {
             ofstream fout;
             try {
@@ -64,12 +68,15 @@ class Pattern {
                cout << "could not save pattern to: patterns\\" << filename << ".txt\n";
             }
         }
+
         string me(){
             return this->name;
         }
+
         vector<pair<int, int> > coords() {
             return this->coordinates;
         }
+
 };
 
 class PatternManager {

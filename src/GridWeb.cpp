@@ -7,6 +7,7 @@ GridWeb::GridWeb() {
 	this->is_searching = false;
 	this->worker = new WebWorker*;
 }
+
 GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
 	if (numWork < 1) numWork = 1;
@@ -21,6 +22,7 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 		this->worker[i] = new WebWorker(gridSize, &(this->gridWeb), &(this->gridRoots), this->workerMutex, i);
 	}
 }
+
 GridWeb::~GridWeb() {
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
 		delete this->worker[i];
@@ -32,6 +34,7 @@ GridWeb::~GridWeb() {
 bool GridWeb::isSearching() {
 	return this->is_searching;
 }
+
 void GridWeb::startSearching() {
 	cout << "search started" << endl;
 	this->is_searching = true;
@@ -39,6 +42,7 @@ void GridWeb::startSearching() {
 		this->worker[i]->start();
 	}
 }
+
 void GridWeb::stopSearching() {
 	cout << "search stopped" << endl;
 	for (unsigned int i = 0; i < this->numWorkers; i++) {
@@ -60,6 +64,7 @@ std::vector<pair<int, int> > GridWeb::nextGrid() {
 	return member->second.startCoords;
 	//return this->gridWeb[this->gridRoots[this->shownIndex % this->gridRoots.size()].member(0)].startCoords;
 }
+
 std::vector<pair<int, int> > GridWeb::previousGrid() {
 	shownIndex--;
 	if (!this->gridRoots.size()) {

@@ -3,6 +3,7 @@
 PatternManager::PatternManager() {
     this->patterns.clear();
 }
+
 PatternManager::PatternManager(string baseFile) {
     string filename;
     ifstream fin;
@@ -24,6 +25,7 @@ PatternManager::PatternManager(string baseFile) {
     }
 
 }
+
 PatternManager::~PatternManager() {
     //do nothing
 }
@@ -37,14 +39,17 @@ void PatternManager::writePatternFile(int index, string filename) {
         this->patterns[index].save(filename);
     }
 }
+
 void PatternManager::writeAllPatterns() {
     for (int i = 0; i < this->patterns.size(); i++) {
         this->patterns[i].save(this->patterns[i].me());
     }
 }
+
 void PatternManager::pushPattern(Pattern pattern) {
     this->patterns.push_back(pattern);
 }
+
 void PatternManager::pushPattern(string name, vector<pair<int, int> > coords) {
     this->patterns.push_back(Pattern(name,coords));
 }
@@ -65,6 +70,7 @@ int PatternManager::getPatternIndex(string name) {
     }
     return -1;
 }
+
 void PatternManager::setPattern(int index, Pattern &p) {
     if(index >=0 && index < this->patterns.size()) {
         this->patterns[index] = p;
@@ -76,6 +82,7 @@ void PatternManager::popPattern() {
         this->patterns.pop_back();
     }
 }
+
 void PatternManager::popPattern(int index) {
     if(this->patterns.size()) {
         int count = 0;
@@ -87,6 +94,7 @@ void PatternManager::popPattern(int index) {
         }
     }
 }
+
 void PatternManager::popPattern(string name) {
     if(this->patterns.size()) {
         for( vector<Pattern>::iterator it = this->patterns.begin(); it != this->patterns.end(); it++){

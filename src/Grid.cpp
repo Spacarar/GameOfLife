@@ -134,25 +134,7 @@ void Grid::update(bool threaded) {
 	this->planMove();
 	this->updateGrid();
 }
-int Grid::updateThreaded() {
-	int riserStatus = 0, fallerStatus = 0;
-	this->faller = SDL_CreateThread(Grid::startFallerPlan, "fallerPlan", this);
-	this->riser = SDL_CreateThread(Grid::startRiserPlan, "riserPlan", this);
-	SDL_WaitThread(this->riser, &riserStatus);
-	SDL_WaitThread(this->faller, &fallerStatus);
-	if (riserStatus + fallerStatus == 0) {
-		this->riser = SDL_CreateThread(Grid::startRiserUpdate, "riserUpdate", this);
-		this->faller = SDL_CreateThread(Grid::startFallerUpdate, "fallerUpdate", this);
-		SDL_WaitThread(this->riser, &riserStatus);
-		SDL_WaitThread(this->faller, &fallerStatus);
-	}
-	else {
-		cout << "An error has occured" << endl;
-		cin.get();
-		cin.get();
-	}
-	return riserStatus + fallerStatus;
-}
+
 void Grid::draw(SDL_Renderer *ren) {
 	SDL_Rect drawRect;
 	drawRect.w = pixelSize;
@@ -170,6 +152,7 @@ void Grid::draw(SDL_Renderer *ren) {
 		}
 	}
 }
+
 int Grid::count() {
 	int c = 0;
 	for (int y = 0; y < gridSize; y++) {
@@ -179,6 +162,7 @@ int Grid::count() {
 	}
 	return c;
 }
+
 bool Grid::isEmpty() {
 	return this->count() == 0;
 }
@@ -197,6 +181,7 @@ vector<pair<int, int> > Grid::getCoords() {
 	}
 	return rt;
 }
+
 void Grid::printCoords() {
 	vector<pair<int, int> > gridC = this->getCoords();
 	cout << "Coordinates: ";
@@ -233,12 +218,14 @@ bool Grid::operator==(Grid g) {
 void Grid::setState(int x, int y, bool val) {
 	pixel[safeN(y)][safeN(x)]->current = val;
 }
+
 void Grid::setState(vector<pair<int, int> > sc) {
 	this->clear();
 	for (unsigned int i = 0; i < sc.size(); i++) {
 		pixel[safeN(sc[i].second)][safeN(sc[i].first)]->current = true;
 	}
 }
+
 void Grid::clear() {
 	for (int y = 0; y < gridSize; y++) {
 		for (int x = 0; x < gridSize; x++) {
@@ -247,71 +234,6 @@ void Grid::clear() {
 			pixel[y][x]->sync = false;
 		}
 	}
-}
-
-int Grid::startRiserPlan(void *self) {
-	Grid *g = (Grid*)self;
-	int me = 0;
-	int ee = 0;
-	for (int y = 0; y <= floor(g->gridSize/2); y++) {
-		for (int x = 0; x < g->gridSize; x++) {
-			me = g->pixel[y][x]->current;
-			ee = g->neighbors(y, x);
-			if (me) {
-				if (ee < 2 || ee>3) {
-					g->pixel[y][x]->sync = false;
-				}
-			}
-			else {
-				if (ee == 3) {
-					g->pixel[y][x]->sync = true;
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-int Grid::startRiserUpdate(void *self) {
-	Grid *g = (Grid*)self;
-	for (int y = 0; y <= floor(g->gridSize/2); y++) {
-		for (int x = 0; x < g->gridSize; x++) {
-			g->pixel[y][x]->current = g->pixel[y][x]->sync;
-		}
-	}
-	return 0;
-}
-int Grid::startFallerPlan(void *self) {
-	Grid *g = (Grid*)self;
-	int me = 0;
-	int ee = 0;
-	for (int y = g->gridSize - 1; y > floor(g->gridSize/2) ; y--) {
-		for (int x = 0; x < g->gridSize; x++) {
-			me = g->pixel[y][x]->current;
-			ee = g->neighbors(y, x);
-			if (me) {
-				if (ee < 2 || ee>3) {
-					g->pixel[y][x]->sync = false;
-				}
-			}
-			else {
-				if (ee == 3) {
-					g->pixel[y][x]->sync = true;
-				}
-			}
-		}
-	}
-	return 0;
-}
-int Grid::startFallerUpdate(void *self) {
-	Grid *g = (Grid*)self;
-
-	for (int y = g->gridSize - 1; y > floor(g->gridSize/2); y--) {
-		for (int x = 0; x < g->gridSize; x++) {
-			g->pixel[y][x]->current = g->pixel[y][x]->sync;
-		}
-	}
-	return 0;
 }
 
 bool Grid::pixelCheck(int x, int y) {
