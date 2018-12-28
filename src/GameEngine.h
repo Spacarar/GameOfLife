@@ -25,7 +25,10 @@ class GameEngine {
 	Grid *grid; //for drawing
 	GridWeb *gWeb; //for searching patterns
 
-	GameStateButton main_menu_button, exit_button, pause_button, new_game_button, clear_web_button;
+	GameStateButton b_menu_main, b_exit, b_menu_new;
+	GameStateButton b_pause, b_mode_select, b_mode_draw;
+	GameStateButton b_clear_web, b_menu_pattern, b_load_pattern;
+	GameStateButton b_ok, b_cancel;
 
 	void init(unsigned int gridSize = 50, unsigned int numWorkers = 2);
 	void initSDL();

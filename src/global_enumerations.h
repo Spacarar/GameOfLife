@@ -4,7 +4,20 @@
 
 typedef std::chrono::steady_clock mClock;
 
-typedef enum GameState {MAINMENU, PAUSED, SEARCHING, SELECTMODE, DRAWMODE, CLEARWEB, EXITGAME, NONE} GameState;
+typedef enum GameState {
+    MAINMENU,
+    PAUSED,
+    SEARCHMODE,
+    SELECTMODE,
+    DRAWMODE,
+    SAVESELECTION,
+    PATTERNMODE,
+    LOADPATTERN,
+    CLEARWEB,
+    G_OK,
+    G_CANCEL,
+    EXITGAME,
+    NONE} GameState;
 
 typedef enum GridMode {G_PLAY, G_FREEZE} GridMode;
 

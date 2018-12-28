@@ -75,15 +75,27 @@ void GameEngine::initButtons() {
 		int(SCR_HEIGHT - 16)
 	};
 	//buttons that show on the main menu
-	new_game_button = GameStateButton(ren, 50, line[1], font_width * 8, font_width * 2, white, grey, "New Game", SEARCHING);
-	exit_button = GameStateButton(ren, 50, line[6], font_width * 4, font_width * 2, white, grey, "Exit", EXITGAME);
-	
+	b_menu_new = GameStateButton(ren, 50, line[1], font_width * 8, font_width * 2, white, grey, "New Game", SEARCHMODE);
+	b_exit = GameStateButton(ren, 50, line[6], font_width * 4, font_width * 2, white, grey, "Exit", EXITGAME);
+	b_menu_pattern = GameStateButton(ren,50,line[2], font_width * 14, font_width * 2, white, grey, "Load Patterns", PATTERNMODE);
+	b_load_pattern = GameStateButton(ren, 50, line[3], font_width * 4, font_width * 2, white, grey, "load", LOADPATTERN);
+
 	//buttons that show while you are playing the game
-	pause_button = GameStateButton(ren, 16, 16, 50, 50, grey, white, " || ", PAUSED);
-	
+	b_pause = GameStateButton(ren, 16, 16, 50, 50, grey, white, " || ", PAUSED);
+	b_mode_draw = GameStateButton(ren, SCR_WIDTH - 16, SCR_HEIGHT - 16, 50, 50,grey, white,"D", DRAWMODE);
+	b_mode_select = GameStateButton(ren, SCR_WIDTH - 98, SCR_HEIGHT - 16, 50, 50, grey, white, "S", SELECTMODE);
+
 	//buttons that show while the game is paused
-	main_menu_button = GameStateButton(ren, 50, line[1], font_width * 9, font_width * 2, white, {60, 60, 60,255}, "Main Menu", MAINMENU);
-	clear_web_button = GameStateButton(ren, 50, line[2], font_width * 14, font_width * 2, white, grey, "Clear Web Data", MAINMENU);
+	b_menu_main = GameStateButton(ren, 50, line[1], font_width * 9, font_width * 2, white, {60, 60, 60,255}, "Main Menu", MAINMENU);
+	b_clear_web = GameStateButton(ren, 50, line[2], font_width * 14, font_width * 2, white, grey, "Clear Web Data", MAINMENU);
+
+	//general buttons
+	b_ok = GameStateButton(ren, SCR_WIDTH/2 - 80, 0, font_width * 2, font_width * 2, white, grey, "ok", G_OK);
+	b_cancel = GameStateButton(ren, SCR_WIDTH/2 + 50, 0, font_width * 6, font_width * 2, white, grey, "cancel", G_CANCEL);
+
+	b_ok.verticalCenter(ren,SCR_HEIGHT);
+	b_cancel.verticalCenter(ren,SCR_HEIGHT);
+
 }
 
 void GameEngine::update() {
@@ -146,7 +158,7 @@ void GameEngine::handleEvent(SDL_Event e) {
 		case MAINMENU:
 			handleMainMenuEvent(e);
 			break;
-		case SEARCHING:
+		case SEARCHMODE:
 			handleSearchingEvent(e);
 			break;
 		case PAUSED:
@@ -158,12 +170,12 @@ void GameEngine::handleEvent(SDL_Event e) {
 }
 
 void GameEngine::handleMainMenuEvent(SDL_Event &e) {
-	if(new_game_button.handleGameEvent(e) == SEARCHING) {
-		gameState = SEARCHING;
+	if(b_menu_new.handleGameEvent(e) == SEARCHMODE) {
+		gameState = SEARCHMODE;
 		return;
 	}
 
-	if(exit_button.handleGameEvent(e) == EXITGAME) {
+	if(b_exit.handleGameEvent(e) == EXITGAME) {
 		gameState = EXITGAME;
 		return;
 	}
@@ -189,7 +201,7 @@ void GameEngine::handleSearchingEvent(SDL_Event &e) {
 	static int mouseX;
 	static int mouseY;
 
-	if( pause_button.handleGameEvent(e) == PAUSED) {
+	if( b_pause.handleGameEvent(e) == PAUSED) {
 		gameState = PAUSED;
 		return;
 	}
@@ -270,15 +282,15 @@ void GameEngine::handleSearchingEvent(SDL_Event &e) {
 }
 
 void GameEngine::handlePausedEvent(SDL_Event &e) {
-	if (main_menu_button.handleGameEvent(e) == MAINMENU) {
+	if (b_menu_main.handleGameEvent(e) == MAINMENU) {
 		gameState = MAINMENU;
 		return;
 	}
-	if (clear_web_button.handleGameEvent(e) == CLEARWEB) {
+	if (b_clear_web.handleGameEvent(e) == CLEARWEB) {
 		this->gWeb->clear(); //destroys the web :(
 		cout << "WEB CLEARED :( "<<endl;
 	}
-	if (exit_button.handleGameEvent(e) == EXITGAME) {
+	if (b_exit.handleGameEvent(e) == EXITGAME) {
 		gameState = EXITGAME;
 		isRunning = false;
 		return;
@@ -297,7 +309,7 @@ void GameEngine::draw() {
 		case MAINMENU:
 			drawMainMenu();
 			break;
-		case SEARCHING:
+		case SEARCHMODE:
 			drawGameplay();
 			break;
 		case PAUSED:
@@ -313,19 +325,19 @@ void GameEngine::draw() {
 }
 
 void GameEngine::drawMainMenu() {
-	new_game_button.draw(ren);
-	exit_button.draw(ren);
+	b_menu_new.draw(ren);
+	b_exit.draw(ren);
 }
 
 void GameEngine::drawGameplay() {
 	grid->draw(ren);
-	pause_button.draw(ren);
+	b_pause.draw(ren);
 }
 
 void GameEngine::drawPauseMenu() {
-	main_menu_button.draw(ren);
-	clear_web_button.draw(ren);
-	exit_button.draw(ren);
+	b_menu_main.draw(ren);
+	b_clear_web.draw(ren);
+	b_exit.draw(ren);
 }
 
 GameEngine::GameEngine() {
