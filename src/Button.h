@@ -33,7 +33,7 @@ class Button {
             text_rect = {x + 10, y + 10, w - 20, h - 20};
             text_color = textColor;
             button_color = buttonColor;
-            font = TTF_OpenFont("..\\fonts\\default.otf", 32);
+            font = TTF_OpenFont("..\\fonts\\default.otf", 128);
             if(font == nullptr) {
                 cout << "Could not open fonts/default.otf" << endl;
             }

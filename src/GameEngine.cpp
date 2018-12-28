@@ -61,16 +61,29 @@ void GameEngine::initSDL() {
 }
 
 void GameEngine::initButtons() {
-	main_menu_button = GameStateButton(ren, 50, 50, 500, 125, {255, 255, 255, 255}, {60, 60, 60,255}, "Main Menu", MAINMENU);
-	exit_button = GameStateButton(ren, 50, SCR_HEIGHT - 50, 175, 125, {255, 255, 255, 255}, {60, 60, 60, 255}, "Exit", EXITGAME);
-	pause_button = GameStateButton(ren, 16, 16, 50, 50, {0, 0, 0, 255}, {255, 255, 255, 255}, " || ", PAUSED);
-	new_game_button = GameStateButton(ren, 50, 300, 475, 125, {255, 255, 255, 255}, {60, 60, 60, 255}, "New Game", SEARCHING);
-	clear_web_button = GameStateButton(ren, 50, SCR_HEIGHT - 450, 500, 125, {255,255,255,255}, {60, 60, 60, 255}, "Clear Web Data", MAINMENU);
+	SDL_Color white = {255, 255, 255, 255};
+	SDL_Color grey = {60, 60, 60, 255};
 
-	// main_menu_button.horizontalCenter(ren,SCR_WIDTH);
-	// main_menu_button.verticalCenter(ren,SCR_HEIGHT);
-	// clear_web_button.horizontalCenter(ren,SCR_WIDTH);
-	// exit_button.horizontalCenter(ren,SCR_WIDTH);
+	int font_width = 48;
+	int line[7] = {
+		16,
+		int(SCR_HEIGHT - 4*SCR_HEIGHT/5),
+		int(SCR_HEIGHT - 3*SCR_HEIGHT/5),
+		int(SCR_HEIGHT - 2*SCR_HEIGHT/5),
+		int(SCR_HEIGHT - 1*SCR_HEIGHT/5),
+		int(SCR_HEIGHT - SCR_HEIGHT/10),
+		int(SCR_HEIGHT - 16)
+	};
+	//buttons that show on the main menu
+	new_game_button = GameStateButton(ren, 50, line[1], font_width * 8, font_width * 2, white, grey, "New Game", SEARCHING);
+	exit_button = GameStateButton(ren, 50, line[6], font_width * 4, font_width * 2, white, grey, "Exit", EXITGAME);
+	
+	//buttons that show while you are playing the game
+	pause_button = GameStateButton(ren, 16, 16, 50, 50, grey, white, " || ", PAUSED);
+	
+	//buttons that show while the game is paused
+	main_menu_button = GameStateButton(ren, 50, line[1], font_width * 9, font_width * 2, white, {60, 60, 60,255}, "Main Menu", MAINMENU);
+	clear_web_button = GameStateButton(ren, 50, line[2], font_width * 14, font_width * 2, white, grey, "Clear Web Data", MAINMENU);
 }
 
 void GameEngine::update() {
