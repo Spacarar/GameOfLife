@@ -44,12 +44,18 @@ class GameEngine {
 
 	void handleEvent(SDL_Event e);
 	void handleMainMenuEvent(SDL_Event &e);
+	void handleGameplayEvent(SDL_Event &e); //used for all gameplay types
 	void handleSearchingEvent(SDL_Event &e);
+	void handleDrawEvent(SDL_Event &e);
+	void handleSelectEvent(SDL_Event &e);
 	void handlePausedEvent(SDL_Event &e);
 
 	void draw();
 	void drawMainMenu();
 	void drawGameplay();
+	void drawSearchHUD();
+	void drawPaintHUD();
+	void drawSelectHUD();
 	void drawPauseMenu();
 
 public:
