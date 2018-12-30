@@ -21,4 +21,6 @@ typedef enum GameState {
 
 typedef enum GridMode {G_PLAY, G_FREEZE} GridMode;
 
+typedef enum ButtonPadding {B_TIGHT, B_NORMAL, B_WIDE, B_NONE} ButtonPadding;
+
 const int MILLIS_PER_SECOND = 1000;
