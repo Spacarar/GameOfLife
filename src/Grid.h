@@ -56,6 +56,7 @@ public:
 	vector<pair<int, int> > getCoords();
 	void printCoords();
 	bool isAlive(int x, int y);
+	pair<int, int> convertMouseCoords(int mouseX, int mouseY);
 
 	bool operator==(Grid g);
 

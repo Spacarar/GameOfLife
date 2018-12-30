@@ -306,11 +306,12 @@ void GameEngine::handleDrawEvent(SDL_Event &e) {
 	static int mx, my;
 	if (e.type == SDL_MOUSEBUTTONDOWN) {
 		SDL_GetMouseState(&mx, &my);
+		pair<int, int> pos = grid->convertMouseCoords(mx,my);
 		if (e.button.button == SDL_BUTTON_LEFT) {
-
+			grid->setState(pos.first,pos.second, true);
 		}
 		else if (e.button.button == SDL_BUTTON_RIGHT) {
-
+			grid->setState(pos.first,pos.second, false);
 		}
 	}
 }
