@@ -25,6 +25,9 @@ class Message {
                 cout << "message could not create surface" <<endl;
                 return;
             }
+            if(texture != nullptr) {
+                SDL_DestroyTexture(texture);
+            }
             texture = SDL_CreateTextureFromSurface(rend, surface);
             if (texture == nullptr) {
                 cout << "message could not create texture from surface" << endl;
@@ -58,6 +61,15 @@ class Message {
                 cout << "Could not open font/default.otf" << endl;
                 return;
             }
+            updateTexture(rend);
+        }
+
+        //constructor to be used with media manager
+        Message(SDL_Renderer *rend, SDL_Rect rect, TTF_Font *f, string message, SDL_Color textColor) {
+            text_rect = rect;
+            text_color = textColor;
+            text = message;
+            font = f;
             updateTexture(rend);
         }
 

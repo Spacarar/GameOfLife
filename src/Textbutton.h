@@ -26,6 +26,12 @@ class TextButton:public Message {
             changePadding(B_NORMAL);
         }
 
+        TextButton(SDL_Renderer *rend, SDL_Rect rect, TTF_Font *f, string message, SDL_Color textColor, SDL_Color buttonColor = {0, 0, 0, 255}, GameState gState=NONE):Message(rend,rect,f,message,textColor) {
+            button_color = buttonColor;
+            activate = gState;
+            changePadding(B_NORMAL);
+        }
+
         void changePadding(ButtonPadding type) {
             switch (type) {
                 case B_TIGHT:
@@ -44,7 +50,7 @@ class TextButton:public Message {
         }
 
         GameState handleEvent(SDL_Event &e, SDL_Point &mouse) {
-             if(SDL_PointInRect(&mouse, &button_rect)) {
+            if(SDL_PointInRect(&mouse, &button_rect)) {
                 if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
                     return activate;
                 }
@@ -53,5 +59,11 @@ class TextButton:public Message {
                 highlight = false;
             }
             return NONE;
+        }
+
+        void draw(SDL_Renderer *rend) override {
+            SDL_SetRenderDrawColor(rend, button_color.r, button_color.g, button_color.b, button_color.a);
+            SDL_RenderFillRect(rend, &button_rect);
+            Message::draw(rend);
         }
 }
