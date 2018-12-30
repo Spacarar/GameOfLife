@@ -16,8 +16,19 @@ class Button {
         SDL_Texture* texture;
         bool highlight;
         void updateTexture(SDL_Renderer *rend) {
+            if(font == nullptr){
+                cout << "font is null when attempting update"<<endl;
+                return;
+            }
             SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), text_color);
+            if(surface == nullptr) {
+                cout << "could not create surface when opening font" <<endl;
+                return;
+            }
             texture = SDL_CreateTextureFromSurface(rend, surface);
+            if(texture == nullptr) {
+                cout << "Could not create texture when updating button" <<endl;
+            }
             SDL_FreeSurface(surface);
         }
 
@@ -33,9 +44,10 @@ class Button {
             text_rect = {x + 10, y + 10, w - 20, h - 20};
             text_color = textColor;
             button_color = buttonColor;
-            font = TTF_OpenFont("..\\fonts\\default.otf", 128);
+            font = TTF_OpenFont("..\\fonts\\default.otf", 256);
             if(font == nullptr) {
                 cout << "Could not open fonts/default.otf" << endl;
+                return;
             }
             updateTexture(rend);
         }

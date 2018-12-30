@@ -256,7 +256,6 @@ pair<int, int> Grid::convertMouseCoords(int mouseX, int mouseY) {
 	if ( gridSize < 1 || pixelSize < 1 ) {
 		return make_pair(int(-1), int(-1));
 	}
-	cout << "og(" << mouseX << ", " << mouseY << ")  g:" << gridSize << endl;
 	int x = int(mouseX/pixelSize);
 	int y = int(mouseY/pixelSize);
 	if( x < 0 || y < 0 || x >= gridSize || y >= gridSize) {
