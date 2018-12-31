@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include <SDL_image.h>
 #include <map>
 #include <string>
@@ -14,6 +15,9 @@ class MediaManager {
     protected:
         map<string, SDL_Texture *> textures;
         map<string, TTF_Font *> fonts;
+        map<string, Mix_Music *> music;
+        map<string, Mix_Chunk *> sounds;
+
 
     public:
         MediaManager() {
@@ -32,11 +36,11 @@ class MediaManager {
         }
 
         SDL_Texture * loadT(SDL_Renderer *ren, string path) {
-            if (textures.count(imagePath) == 0) {
-                SDL_Surface surface = IMG_Load(path.c_str());
-                if(surface != nullptr) {
-                    images[path] = SDL_CreateTextureFromSurface(ren,surface);
-                    SDL_FreeSurface(surface)
+            if (textures.count(path) == 0) {
+                SDL_Surface *surface = IMG_Load(path.c_str());
+                if(surface != NULL) {
+                    textures[path] = SDL_CreateTextureFromSurface(ren,surface);
+                    SDL_FreeSurface(surface);
                 }
                 else {
                     cout << "Media manager could not load: " << path << endl << IMG_GetError() <<endl;
@@ -47,11 +51,35 @@ class MediaManager {
 
         TTF_Font * loadF(SDL_Renderer *ren, string path) {
             if (fonts.count(path) == 0) {
-                TTF_Font * font = TTF_OpenFont(path, 256);
-                if font( != nullptr) {
+                TTF_Font * font = TTF_OpenFont(path.c_str(), 256);
+                if (font != NULL) {
                     fonts[path] = font;
                 }
             }
+        }
+
+        Mix_Music * loadM(SDL_Renderer *ren, string path) {
+            if (music.count(path) == 0) {
+                Mix_Music *m = Mix_LoadMUS(path.c_str());
+                if (m != NULL) {
+                    music[path] = m;
+                } else {
+                    cout << "media manager could not load: "<< path <<endl;
+                }
+            }
+            return music[path];
+        }
+
+        Mix_Chunk * loadS(SDL_Renderer *ren, string path) {
+            if (sounds.count(path) == 0) {
+                Mix_Chunk * s = Mix_LoadWAV(path.c_str());
+                if(s != NULL) {
+                    sounds[path] = s;
+                } else {
+                    cout << "Media manager could not load: "<<path<<endl;
+                }
+            }
+            return sounds[path];
         }
 
 };
