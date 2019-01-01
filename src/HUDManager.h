@@ -45,7 +45,9 @@ class HUDManager {
         TextButton *text_buttons;
         IconButton *icon_buttons; 
 
-        GameState handleMainMenuEvent(SDL_Event &e, SDL_Point &p);
+        GameState handleMainMenuEvent(SDL_Event &e, SDL_Point &p) {
+            int menu_items[3] ={b_menu_new, b_exit, b_menu_pattern}
+        }
         GameState handleGameplayEvent(SDL_Event &e, SDL_Point &p); 
         GameState handleSearchingEvent(SDL_Event &e, SDL_Point &p);
         GameState handleDrawEvent(SDL_Event &e, SDL_Point &p);
@@ -84,7 +86,7 @@ class HUDManager {
             rect = {50, textLine(3, scr_height), font_width * 15, font_height};
             text_buttons[b_clear_web] = TextButton(rend,rect,def_font, "Clear Web Data", white, grey, CLEARWEB);
             rect = {50, textLine(3, scr_height), font_width * 12, font_height};
-            text_buttons[b_load_pattern] = TextButton(rend, rect, def_font, "Load Pattern", white, grey, LOADPATTERN);
+            text_buttons[b_menu_pattern] = TextButton(rend, rect, def_font, "Load Pattern", white, grey, PATTERNMODE);
             rect = {mx - 3*font_width, my - font_height/2, font_width * 2, font_height};
             text_buttons[b_ok] = TextButton(rend,rect,def_font,"Ok", white,grey,G_OK);
             rect = {mx + font_width, my - font_height/2, font_width * 2, font_height};
