@@ -84,12 +84,32 @@ class HUDManager {
             return NONE;
         }
 
-        void drawMainMenu(SDL_Renderer *rend);
-        void drawGameplay(SDL_Renderer *rend);
-        void drawSearchHUD(SDL_Renderer *rend);
-        void drawPaintHUD(SDL_Renderer *rend);
-        void drawSelectHUD(SDL_Renderer *rend);
-        void drawPauseMenu(SDL_Renderer *rend);
+        void drawMainMenu(SDL_Renderer *rend) {
+            messages[g_title].draw(rend);
+            text_buttons[b_menu_new].draw(rend);
+            text_buttons[b_menu_pattern].draw(rend);
+            text_buttons[b_exit].draw(rend);
+        }
+        void drawGameplay(SDL_Renderer *rend) {
+            icon_buttons[b_mode_draw].draw(rend);
+            icon_buttons[b_mode_pause].draw(rend);
+            icon_buttons[b_mode_search].draw(rend);
+            icon_buttons[b_mode_select].draw(rend);
+        }
+        void drawSearchHUD(SDL_Renderer *rend) {
+            //idk yet
+        }
+        void drawPaintHUD(SDL_Renderer *rend) {
+            //idk yet
+        }
+        void drawSelectHUD(SDL_Renderer *rend) {
+            //idk yet
+        }
+        void drawPauseMenu(SDL_Renderer *rend) {
+            text_buttons[b_menu_main].draw(rend);
+            text_buttons[b_clear_web].draw(rend);
+            text_buttons[b_exit].draw(rend);
+        }
 
     public:
         HUDManager(SDL_Renderer *rend, int scr_width, int scr_height) {
