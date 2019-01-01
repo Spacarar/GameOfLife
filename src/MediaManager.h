@@ -23,6 +23,8 @@ class MediaManager {
         MediaManager() {
             textures.clear();
             fonts.clear();
+            music.clear();
+            sounds.clear();
         }
         ~MediaManager() {
             map<string, SDL_Texture *>::iterator tit = textures.begin();
