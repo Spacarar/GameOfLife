@@ -46,13 +46,43 @@ class HUDManager {
         IconButton *icon_buttons; 
 
         GameState handleMainMenuEvent(SDL_Event &e, SDL_Point &p) {
-            int menu_items[3] ={b_menu_new, b_exit, b_menu_pattern}
+            int num = 3;
+            int menu_items[num] ={b_menu_new, b_exit, b_menu_pattern};
+            GameState defG = NONE;
+            for(int i = 0; i < num; i++) {
+                defG = text_buttons[menu_items[i]].handleEvent(e,p);
+                if(defG != NONE);
+                return defG;
+            }
+            return NONE;
         }
-        GameState handleGameplayEvent(SDL_Event &e, SDL_Point &p); 
-        GameState handleSearchingEvent(SDL_Event &e, SDL_Point &p);
-        GameState handleDrawEvent(SDL_Event &e, SDL_Point &p);
-        GameState handleSelectEvent(SDL_Event &e, SDL_Point &p);
-        GameState handlePausedEvent(SDL_Event &e, SDL_Point &p);
+        GameState handleGameplayEvent(SDL_Event &e, SDL_Point &p) {
+            int i_num = 4;
+            int g_icons[i_num] = {b_mode_search, b_mode_select, b_mode_draw, b_mode_pause};
+            GameState defG = NONE;
+            for (int i = 0; i < i_num; i++ ) {
+                defG = icon_buttons[g_icons[i]].handleEvent(e,p);
+                if(defG != NONE);
+                return defG;
+            }
+            return NONE;
+        }
+        GameState handleSearchingEvent(SDL_Event &e, SDL_Point &p) {
+            // highight proper buttons
+            return NONE;
+        }
+        GameState handleDrawEvent(SDL_Event &e, SDL_Point &p) {
+            //highlight proper buttons
+            return NONE;
+        }
+        GameState handleSelectEvent(SDL_Event &e, SDL_Point &p) {
+            //highlight proper buttons
+            return NONE;
+        }
+        GameState handlePausedEvent(SDL_Event &e, SDL_Point &p) {
+            //highlight proper buttons
+            return NONE;
+        }
 
         void drawMainMenu(SDL_Renderer *rend);
         void drawGameplay(SDL_Renderer *rend);
@@ -86,7 +116,8 @@ class HUDManager {
             rect = {50, textLine(3, scr_height), font_width * 15, font_height};
             text_buttons[b_clear_web] = TextButton(rend,rect,def_font, "Clear Web Data", white, grey, CLEARWEB);
             rect = {50, textLine(3, scr_height), font_width * 12, font_height};
-            text_buttons[b_menu_pattern] = TextButton(rend, rect, def_font, "Load Pattern", white, grey, PATTERNMODE);
+            text_buttons[b_menu_pattern] = TextButton(rend, rect, def_font, "Load Pattern files", white, grey, PATTERNMODE);
+            text_buttons[b_load_pattern] = TextButton(rend, rect, def_font, "Load Pattern", white, grey, LOADPATTERN);
             rect = {mx - 3*font_width, my - font_height/2, font_width * 2, font_height};
             text_buttons[b_ok] = TextButton(rend,rect,def_font,"Ok", white,grey,G_OK);
             rect = {mx + font_width, my - font_height/2, font_width * 2, font_height};
@@ -120,28 +151,48 @@ class HUDManager {
         }
 
         GameState handleEvent(GameState current, SDL_Event &e, SDL_Point &p) {
+            GameState defG = NONE;
             if(current == SEARCHMODE || current == DRAWMODE || current == SELECTMODE) {
-                handleGameplayEvent(e,p);
+                defG = handleGameplayEvent(e,p);
+                if (defG != NONE) {
+                    return defG;
+                }
             }
             switch(current) {
                 case MAINMENU:
-                    handleMainMenuEvent(e,p);
+                    defG = handleMainMenuEvent(e,p);
+                    if (defG != NONE) {
+                        return defG;
+                    }
                     break;
                 case SEARCHMODE:
-                    handleSearchingEvent(e,p);
+                    defG = handleSearchingEvent(e,p);
+                    if (defG != NONE) {
+                        return defG;
+                    }
                     break;
                 case DRAWMODE:
-                    handleDrawEvent(e,p);
+                    defG = handleDrawEvent(e,p);
+                    if (defG != NONE) {
+                        return defG;
+                    }
                     break;
                 case SELECTMODE:
-                    handleSelectEvent(e,p);
+                    defG = handleSelectEvent(e,p);
+                    if (defG != NONE) {
+                        return defG;
+                    }
                     break;
                 case PAUSED:
-                    handlePausedEvent(e,p);
+                    defG = handlePausedEvent(e,p);
+                    if (defG != NONE) {
+                        return defG;
+                    }
                     break;
                 default:
                 
             }
+            return NONE;
         }
         void draw(GameState current, SDL_Renderer *rend) {
             if(current == SEARCHMODE || current == DRAWMODE || current == SELECTMODE) {
