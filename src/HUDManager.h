@@ -41,18 +41,14 @@ class HUDManager {
     protected:
         MediaManager* media;
         vector<Message*> messages;
-        // Message *messages;
         vector<Icon*> icons;
-        // Icon *icons;
         vector<TextButton*> text_buttons;
-        // TextButton *text_buttons;
         vector<IconButton*> icon_buttons;
-        // IconButton *icon_buttons; 
 
         GameState handleMainMenuEvent(SDL_Event &e, SDL_Point &p) {
-            int num = 3;
-            int menu_items[num] ={b_menu_new, b_exit, b_menu_pattern};
-            GameState defG = NONE;
+            static const int num = 3;
+            static const int menu_items[num] ={b_menu_new, b_exit, b_menu_pattern};
+            static GameState defG = NONE;
             for(int i = 0; i < num; i++) {
                 defG = text_buttons[menu_items[i]]->handleEvent(e,p);
                 if(defG != NONE)
@@ -61,9 +57,9 @@ class HUDManager {
             return NONE;
         }
         GameState handleGameplayEvent(SDL_Event &e, SDL_Point &p) {
-            int i_num = 4;
-            int g_icons[i_num] = {b_mode_search, b_mode_select, b_mode_draw, b_mode_pause};
-            GameState defG = NONE;
+            static const int i_num = 4;
+            static const int g_icons[i_num] = {b_mode_search, b_mode_select, b_mode_draw, b_mode_pause};
+            static GameState defG = NONE;
             for (int i = 0; i < i_num; i++ ) {
                 defG = icon_buttons[g_icons[i]]->handleEvent(e,p);
                 if(defG != NONE)
@@ -84,7 +80,14 @@ class HUDManager {
             return NONE;
         }
         GameState handlePausedEvent(SDL_Event &e, SDL_Point &p) {
-            //highlight proper buttons
+            static const int num = 3;
+            static const int menu_items[num] = {b_menu_main, b_clear_web, b_exit};
+            static GameState defG = NONE;
+            for (int i = 0; i < num; i++ ) {
+                defG = text_buttons[menu_items[i]]->handleEvent(e,p);
+                if(defG != NONE)
+                    return defG;
+            }
             return NONE;
         }
 
@@ -117,7 +120,6 @@ class HUDManager {
 
     public:
         HUDManager(SDL_Renderer *rend, int scr_width, int scr_height) {
-            cout << "starting hud construction" << endl;
             media = new MediaManager();
             int mx = int(scr_width/2);
             int my = int(scr_height/2);
@@ -147,20 +149,19 @@ class HUDManager {
 
             //ICON BUTTONS
             int i_width = 32, i_height = 32;
-            int p = 12;
+            int p = 24;
             SDL_Rect src_rect = {0, 0, 64, 64}; //sprite src rect
             rect = {scr_width - (i_width + p), scr_height - (i_height + p), i_width, i_height };
-            // icon_buttons[b_mode_search] = IconButton(media->loadT(rend,"..\\icons\\default_set.png"), src_rect, rect, white, SEARCHMODE);
-            // src_rect.x += 64;
-            // rect = {rect.x - (i_width + p), rect.y, i_width, i_height };
-            // icon_buttons[b_mode_select] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, SELECTMODE);
-            // src_rect.x += 64;
-            // rect = {rect.x - (i_width + p), rect.y, rect.w, rect.h};
-            // icon_buttons[b_mode_draw] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, DRAWMODE);
-            // src_rect.x += 64;
-            // rect = {p, p, i_width, i_height};
-            // icon_buttons[b_mode_pause] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, PAUSED);
-            cout << "MADE IT TO CONSTRUCTION" << endl;
+            icon_buttons.push_back(new IconButton(media->loadT(rend,"..\\icons\\default_set.png"), src_rect, rect, white, SEARCHMODE));
+            src_rect.x += 64;
+            rect = {rect.x - (i_width + p), rect.y, i_width, i_height };
+            icon_buttons.push_back(new IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, SELECTMODE));
+            src_rect.x += 64;
+            rect = {rect.x - (i_width + p), rect.y, rect.w, rect.h};
+            icon_buttons.push_back(new IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, DRAWMODE));
+            src_rect.x += 64;
+            rect = {p, p, i_width, i_height};
+            icon_buttons.push_back(new IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, PAUSED));
         }
 
         ~HUDManager() {
@@ -224,7 +225,6 @@ class HUDManager {
             return NONE;
         }
         void draw(GameState current, SDL_Renderer *rend) {
-            // return;
             if(current == SEARCHMODE || current == DRAWMODE || current == SELECTMODE) {
                 drawGameplay(rend);
             }
