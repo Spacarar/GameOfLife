@@ -31,6 +31,9 @@ class TextButton:public Message {
             activate = gState;
             changePadding(B_NORMAL);
         }
+        ~TextButton() override {
+            
+        }
 
         void changePadding(ButtonPadding type) {
             switch (type) {
@@ -66,4 +69,4 @@ class TextButton:public Message {
             SDL_RenderFillRect(rend, &button_rect);
             Message::draw(rend);
         }
-}
+};

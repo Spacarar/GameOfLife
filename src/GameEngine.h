@@ -2,9 +2,10 @@
 #include<chrono>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
+#include <SDL_image.h>
 #include "GridWeb.h"
-#include "GameStateButton.h"
-#include "global_enumerations.h"
+#include "HUDManager.h"
 
 class GameEngine {
 	int SCR_WIDTH;
@@ -25,14 +26,10 @@ class GameEngine {
 	Grid *grid; //for drawing
 	GridWeb *gWeb; //for searching patterns
 
-	GameStateButton b_menu_main, b_exit, b_menu_new;
-	GameStateButton b_pause, b_mode_select, b_mode_draw;
-	GameStateButton b_clear_web, b_menu_pattern, b_load_pattern;
-	GameStateButton b_ok, b_cancel;
+	HUDManager *hud;
 
 	void init(unsigned int gridSize = 50, unsigned int numWorkers = 2);
 	void initSDL();
-	void initButtons();
 	void update();
 	
 	static int updateGame(void* self);
@@ -51,12 +48,7 @@ class GameEngine {
 	void handlePausedEvent(SDL_Event &e);
 
 	void draw();
-	void drawMainMenu();
-	void drawGameplay();
-	void drawSearchHUD();
-	void drawPaintHUD();
-	void drawSelectHUD();
-	void drawPauseMenu();
+	string stateString(GameState g) const;
 
 public:
 	GameEngine();

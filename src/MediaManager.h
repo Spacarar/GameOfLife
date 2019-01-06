@@ -27,12 +27,10 @@ class MediaManager {
             sounds.clear();
         }
         ~MediaManager() {
-            map<string, SDL_Texture *>::iterator tit = textures.begin();
-            map<string, TTF_Font *>::iterator fit = fonts.begin();
-            for (tit; tit != textures.end(); tit++) {
+            for (map<string, SDL_Texture *>::iterator tit = textures.begin(); tit != textures.end(); tit++) {
                 SDL_DestroyTexture(tit->second);
             }
-            for (fit; fit != fonts.end(); fit++) {
+            for (map<string, TTF_Font *>::iterator fit = fonts.begin(); fit != fonts.end(); fit++) {
                 TTF_CloseFont(fit->second);
             }
         }
@@ -58,6 +56,7 @@ class MediaManager {
                     fonts[path] = font;
                 }
             }
+            return fonts[path];
         }
 
         Mix_Music * loadM(SDL_Renderer *ren, string path) {

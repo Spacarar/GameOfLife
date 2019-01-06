@@ -59,44 +59,10 @@ void GameEngine::initSDL() {
 			printf("SDL2_ttf init error\n CLOSING...");
 			SDL_Quit();
 	}
-}
-
-void GameEngine::initButtons() {
-	SDL_Color white = {255, 255, 255, 255};
-	SDL_Color grey = {60, 60, 60, 255};
-
-	int font_width = 32;
-	int line[7] = {
-		96,
-		int(SCR_HEIGHT - 4*SCR_HEIGHT/5),
-		int(SCR_HEIGHT - 3*SCR_HEIGHT/5),
-		int(SCR_HEIGHT - 2*SCR_HEIGHT/5),
-		int(SCR_HEIGHT - 1*SCR_HEIGHT/5),
-		int(SCR_HEIGHT - SCR_HEIGHT/10),
-		int(SCR_HEIGHT - 96)
-	};
-	//buttons that show on the main menu
-	b_menu_new = GameStateButton(ren, 50, line[1], font_width * 7, font_width * 2, white, grey, "New Game", SEARCHMODE);
-	b_exit = GameStateButton(ren, 50, line[6], font_width * 3, font_width * 2, white, grey, "Exit", EXITGAME);
-	b_menu_pattern = GameStateButton(ren,50,line[2], font_width * 11, font_width * 2, white, grey, "Load Patterns", PATTERNMODE);
-	b_load_pattern = GameStateButton(ren, 50, line[3], font_width * 3, font_width * 2, white, grey, "load", LOADPATTERN);
-
-	//buttons that show while you are playing the game
-	b_pause = GameStateButton(ren, 16, 16, 50, 50, grey, white, " || ", PAUSED);
-	b_mode_draw = GameStateButton(ren, SCR_WIDTH - 66, SCR_HEIGHT - 66, 50, 50,grey, white,"D", DRAWMODE);
-	b_mode_select = GameStateButton(ren, SCR_WIDTH - 122, SCR_HEIGHT - 66, 50, 50, grey, white, "S", SELECTMODE);
-
-	//buttons that show while the game is paused
-	b_menu_main = GameStateButton(ren, 50, line[1], font_width * 8, font_width * 2, white, {60, 60, 60,255}, "Main Menu", MAINMENU);
-	b_clear_web = GameStateButton(ren, 50, line[2], font_width * 13, font_width * 2, white, grey, "Clear Web Data", MAINMENU);
-
-	//general buttons
-	b_ok = GameStateButton(ren, SCR_WIDTH/2 - 80, 0, font_width * 1.5, font_width * 2, white, grey, "ok", G_OK);
-	b_cancel = GameStateButton(ren, SCR_WIDTH/2 + 50, 0, font_width * 5, font_width * 2, white, grey, "cancel", G_CANCEL);
-
-	b_ok.verticalCenter(ren,SCR_HEIGHT);
-	b_cancel.verticalCenter(ren,SCR_HEIGHT);
-
+	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) == -1) {
+		printf("SDL2_img init error\n CLOSING...");
+		SDL_Quit();
+	}
 }
 
 void GameEngine::update() {
@@ -155,6 +121,25 @@ bool GameEngine::drawRequired() {
 }
 
 void GameEngine::handleEvent(SDL_Event e) {
+	static SDL_Point p = {0,0};
+	SDL_GetMouseState(&p.x, &p.y);
+	//hud cannot directly manipulate game engine, must returns
+	static GameState tmpState = NONE;
+	tmpState = hud->handleEvent(gameState,e, p);
+	//ignore any NONE's
+	if (tmpState != NONE) {
+		cout << stateString(tmpState) <<endl;
+		//handle special cases first
+		if(tmpState == CLEARWEB) {
+
+		} else if (tmpState == SAVESELECTION) {
+
+		} else {
+			//gamestate was returned as not none, and is not a special case
+			gameState = tmpState;
+			return;
+		}
+	}
 	if (gameState == SEARCHMODE || gameState == DRAWMODE || gameState == SELECTMODE) {
 		handleGameplayEvent(e);
 	}
@@ -180,16 +165,6 @@ void GameEngine::handleEvent(SDL_Event e) {
 }
 
 void GameEngine::handleMainMenuEvent(SDL_Event &e) {
-	if(b_menu_new.handleGameEvent(e) == SEARCHMODE) {
-		gameState = SEARCHMODE;
-		return;
-	}
-
-	if(b_exit.handleGameEvent(e) == EXITGAME) {
-		gameState = EXITGAME;
-		return;
-	}
-
 	static int mouseX;
 	static int mouseY;
 	if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -209,18 +184,6 @@ void GameEngine::handleMainMenuEvent(SDL_Event &e) {
 
 
 void GameEngine::handleGameplayEvent(SDL_Event &e) {
-	if (b_pause.handleGameEvent(e) == PAUSED) {
-		gameState = PAUSED;
-		return;
-	}
-	if (b_mode_draw.handleGameEvent(e) == DRAWMODE) {
-		gameState = DRAWMODE;
-		return;
-	}
-	if (b_mode_select.handleGameEvent(e) == SELECTMODE) {
-		gameState = SELECTMODE;
-		return;
-	}
 	if (e.type == SDL_KEYDOWN) {
 		switch(e.key.keysym.sym) {
 			case SDLK_0:
@@ -330,90 +293,49 @@ void GameEngine::handleSelectEvent(SDL_Event &e) {
 }
 
 void GameEngine::handlePausedEvent(SDL_Event &e) {
-	if (b_menu_main.handleGameEvent(e) == MAINMENU) {
-		gameState = MAINMENU;
-		return;
-	}
-	if (b_clear_web.handleGameEvent(e) == CLEARWEB) {
-		this->gWeb->clear(); //destroys the web :(
-		cout << "WEB CLEARED :( "<<endl;
-	}
-	if (b_exit.handleGameEvent(e) == EXITGAME) {
-		gameState = EXITGAME;
-		isRunning = false;
-		return;
-
-	}
+	
 }
 
 void GameEngine::draw() {
 	SDL_RenderClear(ren);
 	SDL_SetRenderDrawColor(ren,0,0,0,255);
 	if (gameState == SEARCHMODE || gameState == DRAWMODE || gameState == SELECTMODE) {
-		drawGameplay();
+		grid->draw(ren);
 	}
-	switch(gameState) {
-		case MAINMENU:
-			drawMainMenu();
-			break;
-		case SEARCHMODE:
-			drawSearchHUD();
-			break;
-		case DRAWMODE:
-			drawPaintHUD();
-			break;
-		case SELECTMODE:
-			drawSelectHUD();
-			break;
-		case PAUSED:
-			drawPauseMenu();
-			break;
-		default:
-			cout << "unhandled draw event" <<endl;
-	}
+	hud->draw(gameState,ren);
 	SDL_SetRenderDrawColor(ren,0,0,0,255);
 	SDL_RenderPresent(ren);
 }
 
-void GameEngine::drawMainMenu() {
-	b_menu_new.draw(ren);
-	b_menu_pattern.draw(ren);
-	b_exit.draw(ren);
-}
-
-void GameEngine::drawGameplay() {
-	grid->draw(ren);
-	b_pause.draw(ren);
-	b_mode_draw.draw(ren);
-	b_mode_select.draw(ren);
-}
-
-void GameEngine::drawSearchHUD() {
-	//add text
-}
-void GameEngine::drawPaintHUD() {
-	//add text
-}
-void GameEngine::drawSelectHUD() {
-	//add text
-}
-
-void GameEngine::drawPauseMenu() {
-	b_menu_main.draw(ren);
-	b_clear_web.draw(ren);
-	b_exit.draw(ren);
+std::string GameEngine::stateString(GameState g) const{
+    switch(g) {
+        case MAINMENU: return "Main Menu";
+        case PAUSED: return "Paused";
+        case SELECTMODE: return "Select Mode";
+        case SEARCHMODE: return "Search Mode";
+        case DRAWMODE: return "Draw Mode";
+        case SAVESELECTION: return "Save Selection";
+        case PATTERNMODE: return "Pattern Mode";
+        case LOADPATTERN: return "Load Pattern";
+        case CLEARWEB: return "Clear Web";
+        case G_OK: return "OK";
+        case G_CANCEL: return "Cancel";
+        case EXITGAME: return "Exit Game";
+        case NONE: return "None";
+        default: return "UNKNOWN GAMESTATE";
+    }
+    return "IMPOSSIBLE GAMESTATE";
 }
 
 GameEngine::GameEngine() {
 	init();
 	initSDL();
-	initButtons();
 }
 
 GameEngine::GameEngine(unsigned int GridSize, unsigned int gridWork) {
 	init(GridSize, gridWork);
 	initSDL();
-	initButtons();
+	hud = new HUDManager(ren,SCR_WIDTH, SCR_HEIGHT);
 }
 
 GameEngine::~GameEngine() {

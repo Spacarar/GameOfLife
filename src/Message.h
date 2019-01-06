@@ -16,20 +16,17 @@ class Message {
         SDL_Texture* texture;
 
         void updateTexture(SDL_Renderer *rend) {
-            if (font == nullptr) {
+            if (font == NULL) {
                 cout << "message font null" <<endl;
                 return;
             }
             SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), text_color);
-            if(surface == nullptr) {
+            if(surface == NULL) {
                 cout << "message could not create surface" <<endl;
                 return;
             }
-            if(texture != nullptr) {
-                SDL_DestroyTexture(texture);
-            }
             texture = SDL_CreateTextureFromSurface(rend, surface);
-            if (texture == nullptr) {
+            if (texture == NULL) {
                 cout << "message could not create texture from surface" << endl;
             }
             SDL_FreeSurface(surface);
@@ -71,6 +68,9 @@ class Message {
             text = message;
             font = f;
             updateTexture(rend);
+        }
+        virtual ~Message() {
+            
         }
 
         void changeTextSize(SDL_Renderer *rend, SDL_Rect rect) {

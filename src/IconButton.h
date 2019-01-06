@@ -20,9 +20,12 @@ class IconButton:public Icon {
 
         IconButton(SDL_Texture *tex, SDL_Rect src_rect, SDL_Rect dst_rect, SDL_Color c={0,0,0,255}, GameState active=NONE):Icon(tex,src_rect,dst_rect) {
             activate = active;
-            changePadding(B_NORMAL);
+           changePadding(B_NORMAL);
             button_color = c;
             highlight = false;
+        }
+        ~IconButton() override{
+            SDL_DestroyTexture(texture);
         }
         void changePadding(ButtonPadding type) {
             switch (type) {
@@ -58,4 +61,4 @@ class IconButton:public Icon {
             }
             return NONE;
         }
-}
+};

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <vector>
 #include "MediaManager.h"
-#include "global_enumerations.h"
 #include "Message.h"
 #include "Icon.h"
 #include "TextButton.h"
@@ -40,19 +40,23 @@ class HUDManager {
 
     protected:
         MediaManager* media;
-        Message *messages;
-        Icon *icons;
-        TextButton *text_buttons;
-        IconButton *icon_buttons; 
+        vector<Message*> messages;
+        // Message *messages;
+        vector<Icon*> icons;
+        // Icon *icons;
+        vector<TextButton*> text_buttons;
+        // TextButton *text_buttons;
+        vector<IconButton*> icon_buttons;
+        // IconButton *icon_buttons; 
 
         GameState handleMainMenuEvent(SDL_Event &e, SDL_Point &p) {
             int num = 3;
             int menu_items[num] ={b_menu_new, b_exit, b_menu_pattern};
             GameState defG = NONE;
             for(int i = 0; i < num; i++) {
-                defG = text_buttons[menu_items[i]].handleEvent(e,p);
-                if(defG != NONE);
-                return defG;
+                defG = text_buttons[menu_items[i]]->handleEvent(e,p);
+                if(defG != NONE)
+                    return defG;
             }
             return NONE;
         }
@@ -61,9 +65,9 @@ class HUDManager {
             int g_icons[i_num] = {b_mode_search, b_mode_select, b_mode_draw, b_mode_pause};
             GameState defG = NONE;
             for (int i = 0; i < i_num; i++ ) {
-                defG = icon_buttons[g_icons[i]].handleEvent(e,p);
-                if(defG != NONE);
-                return defG;
+                defG = icon_buttons[g_icons[i]]->handleEvent(e,p);
+                if(defG != NONE)
+                    return defG;
             }
             return NONE;
         }
@@ -85,16 +89,16 @@ class HUDManager {
         }
 
         void drawMainMenu(SDL_Renderer *rend) {
-            messages[g_title].draw(rend);
-            text_buttons[b_menu_new].draw(rend);
-            text_buttons[b_menu_pattern].draw(rend);
-            text_buttons[b_exit].draw(rend);
+            messages[g_title]->draw(rend);
+            text_buttons[b_menu_new]->draw(rend);
+            text_buttons[b_menu_pattern]->draw(rend);
+            text_buttons[b_exit]->draw(rend);
         }
         void drawGameplay(SDL_Renderer *rend) {
-            icon_buttons[b_mode_draw].draw(rend);
-            icon_buttons[b_mode_pause].draw(rend);
-            icon_buttons[b_mode_search].draw(rend);
-            icon_buttons[b_mode_select].draw(rend);
+            icon_buttons[b_mode_draw]->draw(rend);
+            icon_buttons[b_mode_pause]->draw(rend);
+            icon_buttons[b_mode_search]->draw(rend);
+            icon_buttons[b_mode_select]->draw(rend);
         }
         void drawSearchHUD(SDL_Renderer *rend) {
             //idk yet
@@ -106,13 +110,14 @@ class HUDManager {
             //idk yet
         }
         void drawPauseMenu(SDL_Renderer *rend) {
-            text_buttons[b_menu_main].draw(rend);
-            text_buttons[b_clear_web].draw(rend);
-            text_buttons[b_exit].draw(rend);
+            text_buttons[b_menu_main]->draw(rend);
+            text_buttons[b_clear_web]->draw(rend);
+            text_buttons[b_exit]->draw(rend);
         }
 
     public:
         HUDManager(SDL_Renderer *rend, int scr_width, int scr_height) {
+            cout << "starting hud construction" << endl;
             media = new MediaManager();
             int mx = int(scr_width/2);
             int my = int(scr_height/2);
@@ -120,54 +125,58 @@ class HUDManager {
             SDL_Rect rect = {int(mx - font_width * 7), textLine(0,scr_height), font_width * 16, font_height}; // init with title size
             // re-use this font for things that need it
             TTF_Font* def_font = media->loadF(rend, "..\\fonts\\default.otf");
-            
             // MESSAGES
-            messages = new Message[g_title + 1];
-            messages[g_title] = Message(rend,rect, def_font, "Conway's Game of Life", white);
+            messages.push_back(new Message(rend,rect, def_font, "Conway's Game of Life", white));
 
             // TEXT BUTTONS
-            text_buttons = new TextButton[b_cancel + 1];
             rect = {50, textLine(2,scr_height), font_width * 9, font_height};
-            text_buttons[b_menu_main] = TextButton(rend, rect, def_font, "Main Menu", white, grey, MAINMENU);
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "Main Menu", white, grey, MAINMENU));
             rect = {50, textLine(6, scr_height), font_width * 4, font_height};
-            text_buttons[b_exit] = TextButton(rend, rect, def_font, "Exit", white, grey, EXITGAME);
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "Exit", white, grey, EXITGAME));
             rect = {50, textLine(2, scr_height), font_width * 7, font_height};
-            text_buttons[b_menu_new] = TextButton(rend, rect, def_font, "New Game", white, grey, SEARCHMODE);
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "New Game", white, grey, SEARCHMODE));
             rect = {50, textLine(3, scr_height), font_width * 15, font_height};
-            text_buttons[b_clear_web] = TextButton(rend,rect,def_font, "Clear Web Data", white, grey, CLEARWEB);
+            text_buttons.push_back(new TextButton(rend,rect,def_font, "Clear Web Data", white, grey, CLEARWEB));
             rect = {50, textLine(3, scr_height), font_width * 12, font_height};
-            text_buttons[b_menu_pattern] = TextButton(rend, rect, def_font, "Load Pattern files", white, grey, PATTERNMODE);
-            text_buttons[b_load_pattern] = TextButton(rend, rect, def_font, "Load Pattern", white, grey, LOADPATTERN);
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "Load Pattern files", white, grey, PATTERNMODE));
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "Load Pattern", white, grey, LOADPATTERN));
             rect = {mx - 3*font_width, my - font_height/2, font_width * 2, font_height};
-            text_buttons[b_ok] = TextButton(rend,rect,def_font,"Ok", white,grey,G_OK);
+            text_buttons.push_back(new TextButton(rend,rect,def_font,"Ok", white,grey,G_OK));
             rect = {mx + font_width, my - font_height/2, font_width * 2, font_height};
-            text_buttons[b_cancel] = TextButton(rend, rect, def_font, "Cancel", white, grey, G_CANCEL);
+            text_buttons.push_back(new TextButton(rend, rect, def_font, "Cancel", white, grey, G_CANCEL));
 
             //ICON BUTTONS
-            int i_width, i_height = 32;
+            int i_width = 32, i_height = 32;
             int p = 12;
-            icon_buttons = new IconButton[b_mode_pause + 1];
             SDL_Rect src_rect = {0, 0, 64, 64}; //sprite src rect
             rect = {scr_width - (i_width + p), scr_height - (i_height + p), i_width, i_height };
-            icon_buttons[b_mode_search] = IconButton(media->loadT(rend,"..\\icons\\default_set.png"), src_rect, rect, white, SEARCHMODE);
-            src_rect.x += 64;
-            rect = {rect.x - (i_width + p), rect.y, i_width, i_height };
-            icon_buttons[b_mode_select] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, SELECTMODE);
-            src_rect.x += 64;
-            rect = {rect.x - (i_width + p), rect.y, rect.w, rect.h};
-            icon_buttons[b_mode_draw] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, DRAWMODE);
-            src_rect.x += 64;
-            rect = {p, p, i_width, i_height};
-            icon_buttons[b_mode_pause] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, PAUSED);
-
+            // icon_buttons[b_mode_search] = IconButton(media->loadT(rend,"..\\icons\\default_set.png"), src_rect, rect, white, SEARCHMODE);
+            // src_rect.x += 64;
+            // rect = {rect.x - (i_width + p), rect.y, i_width, i_height };
+            // icon_buttons[b_mode_select] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, SELECTMODE);
+            // src_rect.x += 64;
+            // rect = {rect.x - (i_width + p), rect.y, rect.w, rect.h};
+            // icon_buttons[b_mode_draw] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, DRAWMODE);
+            // src_rect.x += 64;
+            // rect = {p, p, i_width, i_height};
+            // icon_buttons[b_mode_pause] = IconButton(media->loadT(rend, "..\\icons\\default_set.png"), src_rect, rect, white, PAUSED);
+            cout << "MADE IT TO CONSTRUCTION" << endl;
         }
 
         ~HUDManager() {
             delete media;
-            delete messages;
-            delete icons;
-            delete text_buttons;
-            delete icon_buttons;
+            for(unsigned int i = 0; i < messages.size(); i++ ){
+                delete messages[i];
+            }
+            for(unsigned int i = 0; i < icons.size(); i++ ){
+                delete icons[i];
+            }
+            for(unsigned int i = 0; i < text_buttons.size(); i++ ){
+                delete text_buttons[i];
+            }
+            for(unsigned int i = 0; i < icon_buttons.size(); i++ ){
+                delete icon_buttons[i];
+            }
         }
 
         GameState handleEvent(GameState current, SDL_Event &e, SDL_Point &p) {
@@ -210,11 +219,12 @@ class HUDManager {
                     }
                     break;
                 default:
-                
+                    return NONE;             
             }
             return NONE;
         }
         void draw(GameState current, SDL_Renderer *rend) {
+            // return;
             if(current == SEARCHMODE || current == DRAWMODE || current == SELECTMODE) {
                 drawGameplay(rend);
             }
@@ -235,7 +245,7 @@ class HUDManager {
                     drawPauseMenu(rend);
                     break;
                 default:
-                
+                    return;
             }
         }
 };

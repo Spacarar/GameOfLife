@@ -20,6 +20,9 @@ class Icon {
             source_rect = src_rect;
             display_rect = dst_rect;
         }
+        virtual ~Icon() {
+            SDL_DestroyTexture(texture);
+        }
 
         void changeSize(SDL_Rect rect) {
             display_rect = rect;
@@ -32,4 +35,4 @@ class Icon {
                 cout << "icon texture is null!" << endl;
             }
         }
-}
+};
