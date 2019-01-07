@@ -51,7 +51,7 @@ class MediaManager {
 
         TTF_Font * loadF(SDL_Renderer *ren, string path) {
             if (fonts.count(path) == 0) {
-                TTF_Font * font = TTF_OpenFont(path.c_str(), 256);
+                TTF_Font * font = TTF_OpenFont(path.c_str(), 48);
                 if (font != NULL) {
                     fonts[path] = font;
                 }

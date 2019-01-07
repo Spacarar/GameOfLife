@@ -41,9 +41,9 @@ class Message {
             text_rect = {x, y, w, h};
             text = message;
             text_color = textColor;
-            font = TTF_OpenFont("..\\fonts\\default.otf", 256);
+            font = TTF_OpenFont("..\\fonts\\zrnic_rg.ttf", 256);
             if(font == nullptr) {
-                cout << "Could not open font/default.otf" << endl;
+                cout << "Could not open font/zrnic_rg.ttf" << endl;
                 return;
             }
             updateTexture(rend);
@@ -53,9 +53,9 @@ class Message {
             text_rect = rect;
             text_color = textColor;
             text = message;
-            font = TTF_OpenFont("..\\fonts\\default.otf", 256);
+            font = TTF_OpenFont("..\\fonts\\zrnic_rg.ttf", 256);
             if(font == nullptr) {
-                cout << "Could not open font/default.otf" << endl;
+                cout << "Could not open font/zrnic_rg.ttf" << endl;
                 return;
             }
             updateTexture(rend);

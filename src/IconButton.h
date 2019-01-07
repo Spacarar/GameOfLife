@@ -33,10 +33,10 @@ class IconButton:public Icon {
                     button_rect = display_rect;
                     break;
                 case B_NORMAL:
-                    button_rect = {display_rect.x - 10, display_rect.y - 10, display_rect.w + 20, display_rect.h + 20};
+                    button_rect = {display_rect.x - 4, display_rect.y - 4, display_rect.w + 8, display_rect.h + 8};
                     break;
                 case B_WIDE:
-                    button_rect = {display_rect.x - 20, display_rect.y - 20, display_rect.w + 40, display_rect.h + 40};
+                    button_rect = {display_rect.x - 12, display_rect.y - 12, display_rect.w + 24, display_rect.h + 24};
                     break;
                 case B_NONE:
                     button_rect = {0, 0, 0, 0};

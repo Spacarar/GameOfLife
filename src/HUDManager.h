@@ -16,13 +16,14 @@ const SDL_Color white = {255, 255, 255, 255};
 const SDL_Color grey = {60, 60, 60, 255};
 
 const int font_width = 32;
-const int font_height = int(font_width * 1.6);
+const int font_height = int(font_width * 1.8);
 
 
 
 class HUDManager {
     private: 
         int textLine(int linenum, int scr_height) {
+            return int(font_height * (linenum + 1) + (linenum*(font_height/1.5)));
             if (linenum < 0 || scr_height < 0 || linenum > 6) {
                 return -1;
             }
@@ -113,6 +114,7 @@ class HUDManager {
             //idk yet
         }
         void drawPauseMenu(SDL_Renderer *rend) {
+            messages[g_title]->draw(rend);
             text_buttons[b_menu_main]->draw(rend);
             text_buttons[b_clear_web]->draw(rend);
             text_buttons[b_exit]->draw(rend);
@@ -124,27 +126,27 @@ class HUDManager {
             int mx = int(scr_width/2);
             int my = int(scr_height/2);
             // re-use this rect to save line length
-            SDL_Rect rect = {int(mx - font_width * 7), textLine(0,scr_height), font_width * 16, font_height}; // init with title size
+            SDL_Rect rect = {int(mx - font_width * 10.5), textLine(0,scr_height), font_width * 21, font_height}; // init with title size
             // re-use this font for things that need it
-            TTF_Font* def_font = media->loadF(rend, "..\\fonts\\default.otf");
+            TTF_Font* def_font = media->loadF(rend, "..\\fonts\\zrnic_rg.ttf");
             // MESSAGES
             messages.push_back(new Message(rend,rect, def_font, "Conway's Game of Life", white));
 
             // TEXT BUTTONS
             rect = {50, textLine(2,scr_height), font_width * 9, font_height};
             text_buttons.push_back(new TextButton(rend, rect, def_font, "Main Menu", white, grey, MAINMENU));
-            rect = {50, textLine(6, scr_height), font_width * 4, font_height};
+            rect = {50, textLine(6, scr_height), int(font_width * 3.5), font_height};
             text_buttons.push_back(new TextButton(rend, rect, def_font, "Exit", white, grey, EXITGAME));
-            rect = {50, textLine(2, scr_height), font_width * 7, font_height};
+            rect = {50, textLine(2, scr_height), font_width * 8, font_height};
             text_buttons.push_back(new TextButton(rend, rect, def_font, "New Game", white, grey, SEARCHMODE));
-            rect = {50, textLine(3, scr_height), font_width * 15, font_height};
+            rect = {50, textLine(3, scr_height), font_width * 14, font_height};
             text_buttons.push_back(new TextButton(rend,rect,def_font, "Clear Web Data", white, grey, CLEARWEB));
             rect = {50, textLine(3, scr_height), font_width * 12, font_height};
             text_buttons.push_back(new TextButton(rend, rect, def_font, "Load Pattern files", white, grey, PATTERNMODE));
             text_buttons.push_back(new TextButton(rend, rect, def_font, "Load Pattern", white, grey, LOADPATTERN));
-            rect = {mx - 3*font_width, my - font_height/2, font_width * 2, font_height};
+            rect = {mx - 3*font_width, my - font_height/2, int(font_width * 1.5), font_height};
             text_buttons.push_back(new TextButton(rend,rect,def_font,"Ok", white,grey,G_OK));
-            rect = {mx + font_width, my - font_height/2, font_width * 2, font_height};
+            rect = {mx + font_width, my - font_height/2, font_width * 5, font_height};
             text_buttons.push_back(new TextButton(rend, rect, def_font, "Cancel", white, grey, G_CANCEL));
 
             //ICON BUTTONS
