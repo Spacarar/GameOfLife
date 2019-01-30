@@ -25,7 +25,7 @@ protected:
 	int gridSize; // grid will be square 
 	int pixelSize; //size of a displayed pixel of the grid
 
-	Pixel ***pixel; // 2d array of pointers
+	Pixel ***pixel; // 2d array of pointer
 	void freeGrid(); //deallocate pixel array
 
 	int safeN(int n); //modulo math to ensure n is in the array
@@ -43,6 +43,7 @@ public:
 	~Grid();
 
 	void draw(SDL_Renderer *ren);
+	void draw(SDL_Renderer *ren, SDL_Rect camera);
 	void update(bool threaded = false);
 
 	size_t me();

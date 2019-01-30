@@ -2,6 +2,7 @@
 #include<string>
 #include <iostream>
 #include "Grid.h"
+#include "global_enumerations.h"
 
 Grid::Grid(int gridSize, int pixelSize) {
 	if (gridSize > 1) {
@@ -136,7 +137,7 @@ void Grid::update(bool threaded) {
 }
 
 void Grid::draw(SDL_Renderer *ren) {
-	SDL_Rect drawRect;
+	static SDL_Rect drawRect;
 	drawRect.w = pixelSize;
 	drawRect.h = pixelSize;
 	for (int y = 0; y < gridSize; y++) {
@@ -147,6 +148,31 @@ void Grid::draw(SDL_Renderer *ren) {
 				drawRect.x = x * pixelSize;
 				drawRect.y = y * pixelSize;
 				SDL_RenderFillRect(ren, &drawRect);
+				SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+			}
+		}
+	}
+}
+
+void Grid::draw(SDL_Renderer *ren, SDL_Rect camera) {
+	static SDL_Rect drawRect;
+	static SDL_Rect renderRect;
+	static SDL_Rect edgeRect;
+	edgeRect = {0 - camera.x, 0 - camera.y, pixelSize * gridSize, pixelSize * gridSize};
+	SDL_SetRenderDrawColor(ren, 230,30,30,255);
+	SDL_RenderDrawRect(ren,&edgeRect);
+	SDL_SetRenderDrawColor(ren, 0,0,0,255);
+
+	drawRect = {0,0,pixelSize,pixelSize};
+	for(int y=0; y < gridSize; y++) {
+		for( int x = 0; x < gridSize; x++) {
+			if(!pixelCheck(x, y))return;
+			drawRect.x = x*pixelSize;
+			drawRect.y = y*pixelSize;
+			if(pixel[y][x]->current &&  hasIntersection(drawRect, camera)){
+				renderRect = {drawRect.x - camera.x, drawRect.y - camera.y, drawRect.w, drawRect.h};
+				SDL_SetRenderDrawColor(ren, 230, 230, 240, 255);
+				SDL_RenderFillRect(ren, &renderRect);
 				SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 			}
 		}

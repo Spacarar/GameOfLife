@@ -44,6 +44,7 @@ void GameEngine::initSDL() {
 	}
 	SCR_HEIGHT = current.h - 100;
 	SCR_WIDTH = current.w - 100;
+	gridCamera = Camera({0, 0, SCR_WIDTH, SCR_HEIGHT});
 	gWindow = SDL_CreateWindow("Conway's Game of Life", 50, 50, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
 		printf("Could not create window!");
@@ -71,6 +72,7 @@ void GameEngine::update() {
 		return;
 	}
 	totalFrames++;
+	
 	if (g_mode == G_PLAY) {
 		grid->update();
 	}
@@ -98,7 +100,6 @@ int GameEngine::renderGame(void* self) {
 int GameEngine::searchPatterns(void* self) {
 	GameEngine *g = (GameEngine*)self;
 	g->gWeb->startSearching();
-	cout << "SEARCH PATTERNS RETURN" << endl;
 	return 0;
 }
 
@@ -128,7 +129,6 @@ void GameEngine::handleEvent(SDL_Event e) {
 	tmpState = hud->handleEvent(gameState,e, p);
 	//ignore any NONE's
 	if (tmpState != NONE) {
-		cout << stateString(tmpState) <<endl;
 		//handle special cases first
 		if(tmpState == CLEARWEB) {
 
@@ -235,6 +235,34 @@ void GameEngine::handleGameplayEvent(SDL_Event &e) {
 				FPS = 640;
 				g_mode = G_PLAY;
 				break;
+			case SDLK_w:
+				gridCamera.dY(-CAMERA_SPEED);
+				break;
+			case SDLK_a:
+				gridCamera.dX(-CAMERA_SPEED);
+				break;
+			case SDLK_s:
+				gridCamera.dY(CAMERA_SPEED);
+				break;
+			case SDLK_d:
+				gridCamera.dX(CAMERA_SPEED);
+				break;
+		}
+	}
+	else if (e.type == SDL_KEYUP) {
+		switch(e.key.keysym.sym) {
+			case SDLK_w:
+				gridCamera.dY(0);
+				break;
+			case SDLK_a:
+				gridCamera.dX(0);
+				break;
+			case SDLK_s:
+				gridCamera.dY(0);
+				break;
+			case SDLK_d:
+				gridCamera.dX(0);
+				break;
 		}
 	}
 }
@@ -254,7 +282,7 @@ void GameEngine::handleSearchingEvent(SDL_Event &e) {
 	}
 	if (e.type == SDL_KEYDOWN) {
 		switch(e.key.keysym.sym) {
-			case SDLK_s:
+			case SDLK_z:
 				if (this->gWeb->isSearching()) {
 					this->gWeb->stopSearching();
 				} else {
@@ -300,7 +328,8 @@ void GameEngine::draw() {
 	SDL_RenderClear(ren);
 	SDL_SetRenderDrawColor(ren,0,0,0,255);
 	if (gameState == SEARCHMODE || gameState == DRAWMODE || gameState == SELECTMODE) {
-		grid->draw(ren);
+		grid->draw(ren, gridCamera.rect());
+		gridCamera.update();
 	}
 	hud->draw(gameState,ren);
 	SDL_SetRenderDrawColor(ren,0,0,0,255);

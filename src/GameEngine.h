@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 #include "GridWeb.h"
 #include "HUDManager.h"
+#include "Camera.h"
 
 class GameEngine {
 	int SCR_WIDTH;
@@ -24,6 +25,7 @@ class GameEngine {
 	mClock::time_point lUpdate, lDraw;
 
 	Grid *grid; //for drawing
+	Camera gridCamera; //for drawing grids bigger than the screen
 	GridWeb *gWeb; //for searching patterns
 
 	HUDManager *hud;

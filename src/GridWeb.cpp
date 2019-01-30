@@ -12,7 +12,7 @@ GridWeb::GridWeb(unsigned int gridSize, unsigned int numWork) {
 	this->gridWeb.clear();
 	if (numWork < 1) numWork = 1;
 	if (numWork > 3) numWork = 3;
-	cout << "Initializing web with " << numWork << " worker threads.\nPress 's' to toggle search" << endl;
+	cout << "Initializing web with " << numWork << " worker threads.\nPress 'z' to toggle search" << endl;
 	this->shownIndex = 0;
 	this->numWorkers = numWork;
 	this->worker = new WebWorker*[numWork];

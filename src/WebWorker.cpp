@@ -180,11 +180,9 @@ WorkCycle WebWorker::createRoot() {
 		this->personalRoot.push(temp);
 		temp = (*this->personalMap)[temp].child;
 		if (temp == origin) {
-			// cout << "root found!" << endl;
 			return ROOTCREATED;
 		}
 	}
-	// cout << "root probably found ?" << endl;
 	return ROOTCREATED;
 }
 
@@ -208,14 +206,12 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 			}
 			if (!exists) {
 				this->globalRoots->push_back(this->personalRoot);
-				// cout << "wrote global root" << endl;
 			}
 		}
 		std::map<size_t, Record>::iterator myRecords;//records from the worker
 		for (myRecords = (*this->personalMap).begin(); myRecords != (*this->personalMap).end(); myRecords++) {
 			if (this->globalMap->count(myRecords->first) <= 0) {
 				(*this->globalMap)[myRecords->first] = Record(myRecords->second);
-				//cout << "Created new record" << endl;
 			}
 			else {
 				for (unsigned int i = 0; i < myRecords->second.parents.size(); i++) {
@@ -224,7 +220,6 @@ WorkCycle WebWorker::dumpData(WorkCycle cy) {
 						(*this->globalMap)[myRecords->first].parents.push_back(myRecords->second.parents[i]);
 					}
 				}
-				//cout << "Updated existing record" << endl;
 			}
 		}
 
@@ -270,7 +265,6 @@ int WebWorker::countParents(size_t node, int count, map<size_t, bool> *seen) {
 		return count;
 	}
 	if ((*seen)[node] == true) {
-		// cout << "node parents circular reference" << endl;
 		return count;
 	}
 	(*personalMap)[node].node_height = count;
