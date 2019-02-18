@@ -289,3 +289,18 @@ pair<int, int> Grid::convertMouseCoords(int mouseX, int mouseY) {
 	}
 	return make_pair(x,y);
 }
+
+void Grid::decreasePixelSize() {
+	if(this->pixelSize > 1) {
+		this->pixelSize -= 1;
+	}
+}
+void Grid::setPixelSize(int pSize) {
+	if (pSize < 0) {
+		pSize = 0;
+	}
+	this->pixelSize = pSize;
+}
+void Grid::increasePixelSize() {
+	this->pixelSize += 1;
+}

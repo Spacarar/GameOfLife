@@ -7,19 +7,6 @@ void GameEngine::init(unsigned int gridSize, unsigned int numWorkers) {
 		gridSize = 10;
 	}
 	int pixelSize = 4;
-	if (gridSize > 150) {
-		pixelSize--;
-		if (gridSize > 300) {
-			pixelSize--;
-		}
-	}
-	if (gridSize < 75) {
-		pixelSize += 2;
-		if (gridSize < 50) {
-			pixelSize += 2;
-		}
-	}
-	// SCR_HEIGHT = SCR_WIDTH = (pixelSize) * gridSize;
 	grid = new Grid(gridSize, pixelSize);
 	gWeb = new GridWeb(gridSize, numWorkers);
 	sTime = lUpdate = lDraw = mClock::now();
@@ -42,8 +29,8 @@ void GameEngine::initSDL() {
 			SDL_Log("Display #%d: current display mode is %dx%dpx @ %dhz.", i, current.w, current.h, current.refresh_rate);
 		}
 	}
-	SCR_HEIGHT = current.h - 100;
-	SCR_WIDTH = current.w - 100;
+	SCR_HEIGHT = current.h - 200;
+	SCR_WIDTH = current.w - 200;
 	gridCamera = Camera({0, 0, SCR_WIDTH, SCR_HEIGHT});
 	gWindow = SDL_CreateWindow("Conway's Game of Life", 50, 50, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
@@ -263,6 +250,13 @@ void GameEngine::handleGameplayEvent(SDL_Event &e) {
 			case SDLK_d:
 				gridCamera.dX(0);
 				break;
+		}
+	}
+	else if (e.type == SDL_MOUSEWHEEL) {
+		if (e.wheel.y > 0) {
+			grid->increasePixelSize();
+		} else if(e.wheel.y < 0) {
+			grid->decreasePixelSize();
 		}
 	}
 }

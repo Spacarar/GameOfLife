@@ -59,6 +59,10 @@ public:
 	bool isAlive(int x, int y);
 	pair<int, int> convertMouseCoords(int mouseX, int mouseY);
 
+	void decreasePixelSize();
+	void setPixelSize(int pSize);
+	void increasePixelSize();
+
 	bool operator==(Grid g);
 
 };
